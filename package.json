@@ -1,0 +1,25 @@
+{
+  "name": "@socialwebfoundation/tags.pub",
+  "version": "0.1.0",
+  "description": "global hashtag server",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/social-web-foundation/tags.pub.git"
+  },
+  "keywords": [
+    "activitypub",
+    "hashtag",
+    "fediverse",
+    "tags"
+  ],
+  "author": "evanp@socialweb.foundation",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/social-web-foundation/tags.pub/issues"
+  },
+  "homepage": "https://github.com/social-web-foundation/tags.pub#readme"
+}
