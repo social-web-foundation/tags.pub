@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/social-web-foundation/tags.pub/issues"
   },
-  "homepage": "https://github.com/social-web-foundation/tags.pub#readme"
+  "homepage": "https://github.com/social-web-foundation/tags.pub#readme",
+  "dependencies": {
+    "@evanp/activitypub-bot": "^0.12.1"
+  }
 }
