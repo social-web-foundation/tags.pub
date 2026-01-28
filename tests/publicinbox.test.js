@@ -301,4 +301,64 @@ describe('routes.inbox', async () => {
       assert.ok(await unshareInOutbox(app, 'friendly', noteId))
     })
   })
+
+  describe('Delete activity to public inbox with multiple tags', async () => {
+    let response = null
+    let delact = null
+    let noteId = null
+    let body
+    let digest
+    let signature
+    const path = '/shared/inbox'
+    const url = `${origin}${path}`
+    const username = 'test1'
+    const date = new Date().toUTCString()
+    before(async () => {
+      delact = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Delete',
+        actor: nockFormat({ username }),
+        to: 'as:Public',
+        id: nockFormat({ username, type: 'Delete', num: 1 }),
+        object: {
+          type: 'Tombstone',
+          id: nockFormat({ username, type: 'Note', num: 2 }),
+          formerType: 'Note'
+        }
+      })
+      noteId = nockFormat({ username, type: 'Note', num: 2 })
+      body = await delact.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest,
+        date
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+    it('should have an undo share for removed shares', async () => {
+      assert.ok(await unshareInOutbox(app, 'greeting', noteId))
+      assert.ok(await unshareInOutbox(app, 'introduction', noteId))
+    })
+  })
 })
