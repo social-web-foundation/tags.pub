@@ -17,7 +17,6 @@ describe('routes.inbox', async () => {
     bots = (await import('../lib/bots.js')).default
     assert.ok(bots)
     assert.strictEqual(typeof bots, 'object')
-    console.dir(bots)
     assert.strictEqual(Object.keys(bots).length, 1)
     assert.ok(bots['*'])
     assert.strictEqual(typeof bots['*'], 'object')
