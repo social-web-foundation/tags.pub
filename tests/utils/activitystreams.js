@@ -1,0 +1,23 @@
+import as2 from 'activitystrea.ms'
+
+as2.registerContext('https://purl.archive.org/miscellany', {
+  '@context': {
+    as: 'https://www.w3.org/ns/activitystreams#',
+    xsd: 'http://www.w3.org/2001/XMLSchema#',
+    Hashtag: 'as:Hashtag',
+    manuallyApprovesFollowers: {
+      '@id': 'as:manuallyApprovesFollowers',
+      '@type': 'xsd:boolean'
+    },
+    movedTo: {
+      '@id': 'as:movedTo',
+      '@type': '@id'
+    },
+    sensitive: {
+      '@id': 'as:sensitive',
+      '@type': 'xsd:boolean'
+    }
+  }
+})
+
+export default as2
