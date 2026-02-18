@@ -4,7 +4,7 @@ import request from 'supertest'
 
 import { makeApp } from '@evanp/activitypub-bot'
 
-describe('routes.inbox', async () => {
+describe('bots', async () => {
   const host = 'activitypubbot.test'
   const origin = `https://${host}`
   const databaseUrl = 'sqlite::memory:'
@@ -17,7 +17,7 @@ describe('routes.inbox', async () => {
     bots = (await import('../lib/bots.js')).default
     assert.ok(bots)
     assert.strictEqual(typeof bots, 'object')
-    assert.strictEqual(Object.keys(bots).length, 1)
+    assert.strictEqual(Object.keys(bots).length, 2)
     assert.ok(bots['*'])
     assert.strictEqual(typeof bots['*'], 'object')
   })
@@ -26,6 +26,43 @@ describe('routes.inbox', async () => {
     app = await makeApp(databaseUrl, origin, bots, 'silent')
     assert.ok(app)
     assert.strictEqual(typeof app, 'function')
+  })
+
+  describe('GET /user/_____relay_____', async () => {
+    let response = null
+    it('should work without an error', async () => {
+      response = await request(app).get(`/user/_____relay_____`)
+    })
+    it('should return 200 OK', async () => {
+      assert.strictEqual(response.status, 200)
+    })
+    it('should return AS2', async () => {
+      assert.strictEqual(response.type, 'application/activity+json')
+    })
+    it('should return an object', async () => {
+      assert.strictEqual(typeof response.body, 'object')
+    })
+    it('should return an object with an id', async () => {
+      assert.strictEqual(typeof response.body.id, 'string')
+    })
+    it('should return an object with an id matching the request', async () => {
+      assert.strictEqual(response.body.id, origin + `/user/_____relay_____`)
+    })
+    it('should return an object with a type', async () => {
+      assert.strictEqual(typeof response.body.type, 'string')
+    })
+    it('should return an object with a type matching the request', async () => {
+      assert.strictEqual(response.body.type, 'Service')
+    })
+    it('should return an object with a preferredUsername', async () => {
+      assert.strictEqual(typeof response.body.preferredUsername, 'string')
+    })
+    it('should return an object with a summary', async () => {
+      assert.strictEqual(typeof response.body.summary, 'string')
+    })
+    it('should return an object with a name', async () => {
+      assert.strictEqual(typeof response.body.name, 'string')
+    })
   })
 
   describe('GET /user/{tag}', async () => {
