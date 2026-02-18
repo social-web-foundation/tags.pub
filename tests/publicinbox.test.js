@@ -53,7 +53,7 @@ async function unshareInOutbox (app, username, objectId) {
   return !!found
 }
 
-describe('routes.inbox', async () => {
+describe('Tags in shared inbox', async () => {
   const host = 'activitypubbot.test'
   const remote = 'social.example'
   const origin = `https://${host}`
