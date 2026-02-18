@@ -6,6 +6,11 @@ import { makeApp } from '@evanp/activitypub-bot'
 import { nockSetup, nockFormat, nockSignature } from '@evanp/activitypub-nock'
 import { makeDigest } from './utils/digest.js'
 
+const nextNum = (() => {
+  let num = 0
+  return () => ++num
+})()
+
 async function shareInOutbox (app, username, objectId) {
   const response = await request(app).get(`/user/${username}/outbox/1`)
   assert.strictEqual(response.status, 200)
@@ -58,6 +63,7 @@ describe('Tags in shared inbox', async () => {
   const remote = 'social.example'
   const origin = `https://${host}`
   const databaseUrl = 'sqlite::memory:'
+  const noteId = nockFormat({ username: 'test1', type: 'Note', num: nextNum() })
 
   let app = null
 
@@ -77,7 +83,7 @@ describe('Tags in shared inbox', async () => {
     const url = `${origin}${path}`
     const username = 'test1'
     const date = new Date().toUTCString()
-    const objectId = nockFormat({ username, type: 'Note', num: 2 })
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
     before(async () => {
       create = await as2.import({
         '@context': [
@@ -87,10 +93,10 @@ describe('Tags in shared inbox', async () => {
         type: 'Create',
         actor: nockFormat({ username }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Create', num: 1 }),
+        id: nockFormat({ username, type: 'Create', num: nextNum() }),
         object: {
           type: 'Note',
-          id: nockFormat({ username, type: 'Note', num: 2 }),
+          id: objectId,
           attributedTo: nockFormat({ username }),
           to: 'as:Public',
           content: `
@@ -157,10 +163,10 @@ describe('Tags in shared inbox', async () => {
         type: 'Create',
         actor: nockFormat({ username }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Create', num: 1 }),
+        id: nockFormat({ username, type: 'Create', num: nextNum() }),
         object: {
           type: 'Note',
-          id: nockFormat({ username, type: 'Note', num: 2 }),
+          id: noteId,
           attributedTo: nockFormat({ username }),
           to: 'as:Public',
           content: `
@@ -187,7 +193,6 @@ describe('Tags in shared inbox', async () => {
           }]
         }
       })
-      objectId = nockFormat({ username, type: 'Note', num: 2 })
       body = await create.write()
       digest = makeDigest(body)
       signature = await nockSignature({
@@ -215,16 +220,15 @@ describe('Tags in shared inbox', async () => {
       assert.strictEqual(response.status, 202)
     })
     it('should have a share in each tag bot outbox', async () => {
-      assert.ok(await shareInOutbox(app, 'greeting', objectId))
-      assert.ok(await shareInOutbox(app, 'intro', objectId))
-      assert.ok(await shareInOutbox(app, 'friendly', objectId))
+      assert.ok(await shareInOutbox(app, 'greeting', noteId))
+      assert.ok(await shareInOutbox(app, 'intro', noteId))
+      assert.ok(await shareInOutbox(app, 'friendly', noteId))
     })
   })
 
   describe('Update activity to public inbox with multiple tags', async () => {
     let response = null
     let update = null
-    let noteId = null
     let body
     let digest
     let signature
@@ -241,10 +245,10 @@ describe('Tags in shared inbox', async () => {
         type: 'Update',
         actor: nockFormat({ username }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Update', num: 1 }),
+        id: nockFormat({ username, type: 'Update', num: nextNum() }),
         object: {
           type: 'Note',
-          id: nockFormat({ username, type: 'Note', num: 2 }),
+          id: noteId,
           attributedTo: nockFormat({ username }),
           to: 'as:Public',
           content: `
@@ -266,7 +270,6 @@ describe('Tags in shared inbox', async () => {
           }]
         }
       })
-      noteId = nockFormat({ username, type: 'Note', num: 2 })
       body = await update.write()
       digest = makeDigest(body)
       signature = await nockSignature({
@@ -305,7 +308,6 @@ describe('Tags in shared inbox', async () => {
   describe('Delete activity to public inbox with multiple tags', async () => {
     let response = null
     let delact = null
-    let noteId = null
     let body
     let digest
     let signature
@@ -322,14 +324,13 @@ describe('Tags in shared inbox', async () => {
         type: 'Delete',
         actor: nockFormat({ username }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Delete', num: 1 }),
+        id: nockFormat({ username, type: 'Delete', num: nextNum() }),
         object: {
           type: 'Tombstone',
-          id: nockFormat({ username, type: 'Note', num: 2 }),
+          id: noteId,
           formerType: 'Note'
         }
       })
-      noteId = nockFormat({ username, type: 'Note', num: 2 })
       body = await delact.write()
       digest = makeDigest(body)
       signature = await nockSignature({
