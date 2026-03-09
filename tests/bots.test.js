@@ -111,7 +111,7 @@ describe('bots', async () => {
       assert.strictEqual(typeof response.body.name, 'string')
     })
     it('should return an object with a name matching the request', async () => {
-      assert.strictEqual(response.body.name, `${tag} hashtag`)
+      assert.strictEqual(response.body.name, `#${tag}`)
     })
   })
 })
