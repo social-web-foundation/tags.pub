@@ -1,4 +1,4 @@
-import { describe, it } from 'node:test'
+import { describe, it, after } from 'node:test'
 import assert from 'node:assert'
 import request from 'supertest'
 
@@ -12,6 +12,13 @@ describe('bots', async () => {
 
   let bots = null
   let app = null
+
+
+  after(async () => {
+    if (app) {
+      await app.cleanup()
+    }
+  })
 
   it('can load the bots', async () => {
     bots = (await import('../lib/bots.js')).default

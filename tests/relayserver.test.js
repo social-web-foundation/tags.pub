@@ -1,4 +1,4 @@
-import { describe, it, before } from 'node:test'
+import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert'
 import request from 'supertest'
 import as2 from './utils/activitystreams.js'
@@ -72,6 +72,10 @@ describe('Tags in relay server inbox', async () => {
     const bots = (await import('../lib/bots.js')).default
     app = await makeApp(databaseUrl, origin, bots, 'silent')
     nockSetup(remote)
+  })
+
+  after(async () => {
+    await app.cleanup()
   })
 
   describe('Create activity to relay server inbox with one tag', async () => {
