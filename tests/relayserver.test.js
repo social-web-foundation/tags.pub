@@ -70,7 +70,7 @@ describe('Tags in relay server inbox', async () => {
 
   before(async () => {
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp(databaseUrl, origin, bots, 'silent')
+    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
     nockSetup(remote)
   })
 

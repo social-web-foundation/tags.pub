@@ -30,7 +30,7 @@ describe('bots', async () => {
   })
 
   it('can initialize the app', async () => {
-    app = await makeApp(databaseUrl, origin, bots, 'silent')
+    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
     assert.ok(app)
     assert.strictEqual(typeof app, 'function')
   })

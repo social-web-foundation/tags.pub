@@ -69,7 +69,7 @@ describe('Tags in shared inbox', async () => {
 
   before(async () => {
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp(databaseUrl, origin, bots, 'silent')
+    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
     nockSetup(remote)
   })
 
