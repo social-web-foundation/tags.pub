@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tags.pub</title>
+</head>
+
+<body>
+  <h1>tags.pub</h1>
+  <p>
+    tags.pub is a global <a href="https://en.wikipedia.org/wiki/Hashtag">hashtag</a> server for the <a
+      href="https://en.wikipedia.org/wiki/Fediverse">Fediverse</a>. You can follow an account like
+    <code>example@tags.pub</code> and it will boost all the content tagged <code>#example</code> from across the
+    Fediverse.
+  </p>
+  <section>
+    <h2>Following a hashtag globally</h2>
+    <p>
+      To follow a tags.pub hashtag in Mastodon, go to the Search input box at the top of the page, and search for the
+      name of the tag with "@tags.pub" at the end. So, for "#bloomscrolling" search for "@bloomscrolling@tags.pub". That
+      should bring up the account on tags.pub to follow.
+    </p>
+    <p>
+      To stop following the hashtag, you can search for the hashtag and click "Unfollow". You can also go to your list
+      of Following accounts, find the relevant tags.pub account, and click Unfollow there.
+    </p>
+    <p>
+      Please note that following a hashtag on your Mastodon server is different than, and independent from, following
+      the same tag on tags.pub. Turning on one won&apos;t turn on the other, and vice versa.
+    </p>
+  </section>
+  <section>
+    <h2>Posting with a hashtag</h2>
+    <p>
+      If you post a note, image, video, audio, or article publicly on the Fediverse and include a hashtag, the content will be boosted by the hashtag account at tags.pub. You should get a notification of the boost in your Mastodon or other Fediverse server. tags.pub will never boost any followers-only posts or direct messages; in fact, you server will not send them.
+    </p>
+    <p>
+      If you edit the hashtags of your content, the tags.pub accounts for the tags you add will boost the content, and the accounts for the tags you remove will undo the boost. You'll get a notification of it either way.
+    </p>
+    <p>
+      If you delete your content, all the tags.pub accounts that boosted it will un-boost it.
+    </p>
+    <p>
+      If you make a post with a hashtag, and it isn&apos;t boosted by tags.pub, it probably means that your server is not connected to tags.pub. Check with your server administrator.
+    </p>
+  </section>
+  <section>
+    <h2>Connecting a server</h2>
+    <p>
+      tags.pub uses multiple sources of content for boosting.
+    </p>
+    <p>
+      The first is open relays. These are specialised servers on the Fediverse that are used to extend the reach of Fediverse servers. tags.pub subscribes to the relays and boosts any public posts it sees that have hashtags in them. If your server already participates in a well-known open relay, like those listed at <a href="https://relaylist.com">relaylist.com</a>, it should already be included -- or will be soon.
+    </p>
+    <p>
+      If your relay is being used by tags.pub and you want us not to, please let us know (see "Contact" below).
+    </p>
+    <p>
+      The second data source is Fediverse servers that opt in to extend their users&apos; reach by participating in tags.pub directly. They use tags.pub as a relay, instead of one of the other available relays. Note that unlike most relays, tags.pub does not share all public data with all servers -- the follow and boost mechanism described above is used instead. So, content flows in just one direction across the relay interface.
+    </p>
+    <p>
+      Server administrators can add the tags.pub relay in their server preferences. For Mastodon servers, add <code>https://tags.pub/user/_____relay_____/inbox</code>. For Pleroma and compatible servers, add <code>https://tags.pub/user/_____relay_____</code>. (That&apos;s the word "relay" with five underscores in front and after, to distinguish it from an actual hashtag!)
+    </p>
+    <p>
+      Disabling and/or deleting the tags.pub relay account from your server settings <strong>should</strong> stop any further content from going to tags.pub.
+    </p>
+    <p>
+      If your Fediverse server does not use the Mastodon or Pleroma relay interfaces, and you want to provide a data feed to tags.pub, please add an issue to GitHub.
+    </p>
+  </section>
+  <section>
+    <h2>Privacy</h2>
+    <p>
+      This section describes how your content is distributed and stored by tags.pub.
+    </p>
+    <p>
+      tags.pub is <strong>not</strong> a search engine or content repository. We do not store the content of posts, image or video or audio files, descriptions of files or alt text, or any of the metadata of the content. We do not have a search index based on any content received.
+    </p>
+    <p>
+      tags.pub <em>does</em> store <code>Announce</code> (aka boost) activities for each content item a hashtag account shares. These activities do have metadata, like timestamps. tags.pub uses block-respecting boosts; the activity only includes the link to the content, and not the content itself. If an account you blocked, or an account on a server you blocked, follows a tags.pub account, they should not be able to see your content.
+    </p>
+    <p>
+      tags.pub stores <code>Undo</code> activities for deleted content or content that was edited.
+    </p>
+    <p>
+      tags.pub is built and operated by the Social Web Foundation, a US-based non-profit dedicated to making the Fediverse better for everyone. tags.pub is hosted on servers in Beauharnois, Quebec, Canada owned by <a href="https://www.ovhcloud.com/">OVHcloud</a>, a French company.
+    </p>
+    <p>
+      Server logs for tags.pub are purged within 90 days; usually much less.
+    </p>
+    <p>
+      The Social Web Foundation does not sell or share data from tags.pub with any company or organization.
+    </p>
+    <p>
+      tags.pub is Free and Open Source software. We invite security and privacy researchers, and any other interested people, to review the code at <a href="https://github.com/social-web-foundation/tags.pub">https://github.com/social-web-foundation/tags.pub</a> for details about how data is used. tags.pub uses the <a href="https://github.com/evanp/activitypub-bot">activitypub-bot</a> framework, which is also worth reviewing.
+    </p>
+  </section>
+  <section>
+    <h2>Opting out</h2>
+    <p>
+      We think that tags.pub is mostly harmless, and for most people it should provide a net benefit. However, we also believe that everyone deserves to control how their content is used.
+    </p>
+    <p>
+      If your server is providing data to tags.pub, and you don&apos;t want your content to be boosted by tags.pub accounts, you can add the <code>#NoTagsPub</code> hashtag to your account bio. (If you've already got a <code>#NoBots</code> hashtag in your account bio, we&apos;ll also skip any boosts.)
+    </p>
+    <p>
+      At the extreme end, you can also block the <code>tags.pub</code> domain, which should prevent tags.pub from seeing your content at all. This has the unfortunate side effect that you can&apos;t follow tags.pub accounts, though!
+    </p>
+  </section>
+  <section>
+    <h2>Contact</h2>
+    <p>
+      The best way to report problems with tags.pub is to <a href="https://github.com/social-web-foundation/tags.pub/issues/new">Create a new issue on GitHub</a>.
+    </p>
+    <p>
+      If you have private information you want to share, or you just don&quot;t feel like posting a GitHub issue, you can use our <a href="https://socialwebfoundation.org/contact/">contact form</a> to send us a private message.
+    </p>
+  </section>
+  <footer>
+    <p>
+      <a href="https://github.com/social-web-foundation/tags.pub">Source</a> |
+      <a href="https://socialwebfoundation.org/">Social Web Foundation</a>
+    </p>
+  </footer>
+</body>
+
+</html>
