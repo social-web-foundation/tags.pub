@@ -1,18 +1,35 @@
-import { describe, it, after } from 'node:test'
+import { describe, it, after, before } from 'node:test'
 import assert from 'node:assert'
 import request from 'supertest'
+import {
+  nockSetup,
+  postInbox,
+  nockFormat
+} from '@evanp/activitypub-nock'
 
 import { makeApp } from '@evanp/activitypub-bot'
 
 describe('bots', async () => {
-  const host = 'activitypubbot.test'
+  const remoteHost = 'remote.bots.test'
+  const thirdHost = 'third.bots.test'
+  const relayUser = 'relay'
+  const thirdUser = 'third'
+  const host = 'bots.test'
   const origin = `https://${host}`
   const databaseUrl = 'sqlite::memory:'
   const tag = 'linux'
 
   let bots = null
   let app = null
+  let relay1 = null
+  let relay2 = null
 
+  before(async () => {
+    nockSetup(remoteHost)
+    nockSetup(thirdHost)
+    relay1 = nockFormat({ username: relayUser, domain: remoteHost })
+    relay2 = nockFormat({ username: thirdUser, domain: thirdHost })
+  })
 
   after(async () => {
     if (app) {
@@ -21,10 +38,11 @@ describe('bots', async () => {
   })
 
   it('can load the bots', async () => {
+    process.env.RELAYS = [relay1,relay2].join(',')
     bots = (await import('../lib/bots.js')).default
     assert.ok(bots)
     assert.strictEqual(typeof bots, 'object')
-    assert.strictEqual(Object.keys(bots).length, 2)
+    assert.strictEqual(Object.keys(bots).length, 4)
     assert.ok(bots['*'])
     assert.strictEqual(typeof bots['*'], 'object')
   })
@@ -113,5 +131,11 @@ describe('bots', async () => {
     it('should return an object with a name matching the request', async () => {
       assert.strictEqual(response.body.name, `#${tag}`)
     })
+  })
+
+  it('subscribes to a remote relay on initialize', async () => {
+    await app.onIdle()
+    assert.equal(postInbox[relayUser], 1)
+    assert.equal(postInbox[thirdUser], 1)
   })
 })
