@@ -367,4 +367,65 @@ describe('Tags in relay server inbox', async () => {
       assert.ok(await unshareInOutbox(app, 'introduction', noteId))
     })
   })
+
+  describe('Create activity to relay server inbox with no tag', async () => {
+    let response = null
+    let create = null
+    let body
+    let digest
+    let signature
+    const path = `/user/${relayServerBot}/inbox`
+    const url = `${origin}${path}`
+    const username = 'test1'
+    const date = new Date().toUTCString()
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
+    before(async () => {
+      create = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Create',
+        actor: nockFormat({ username }),
+        to: 'as:Public',
+        id: nockFormat({ username, type: 'Create', num: nextNum() }),
+        object: {
+          type: 'Note',
+          id: objectId,
+          attributedTo: nockFormat({ username }),
+          to: 'as:Public',
+          content: `
+            <p>
+              Hello, world!
+            </p>
+          `
+        }
+      })
+      body = await create.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest,
+        date
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+  })
 })
