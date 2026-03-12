@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import request from 'supertest'
 import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
-import { nockSetup, nockFormat, nockSignature } from '@evanp/activitypub-nock'
+import { nockSetup, nockFormat, nockSignature, setBio } from '@evanp/activitypub-nock'
 import { makeDigest } from './utils/digest.js'
 
 const nextNum = (() => {
@@ -63,7 +63,7 @@ describe('Tags in relay server inbox', async () => {
   const remote = 'social.example'
   const origin = `https://${host}`
   const databaseUrl = 'sqlite::memory:'
-  const noteId = nockFormat({ username: 'test1', type: 'Note', num: nextNum() })
+  const noteId = nockFormat({ username: 'test1', type: 'Note', num: nextNum(), domain: remote })
   const relayServerBot = '_____relay_____'
 
   let app = null
@@ -88,7 +88,7 @@ describe('Tags in relay server inbox', async () => {
     const url = `${origin}${path}`
     const username = 'test1'
     const date = new Date().toUTCString()
-    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum(), domain: remote })
     before(async () => {
       create = await as2.import({
         '@context': [
@@ -96,13 +96,13 @@ describe('Tags in relay server inbox', async () => {
           'https://purl.archive.org/miscellany'
         ],
         type: 'Create',
-        actor: nockFormat({ username }),
+        actor: nockFormat({ username, domain: remote }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Create', num: nextNum() }),
+        id: nockFormat({ username, type: 'Create', num: nextNum(), domain: remote }),
         object: {
           type: 'Note',
           id: objectId,
-          attributedTo: nockFormat({ username }),
+          attributedTo: nockFormat({ username, domain: remote }),
           to: 'as:Public',
           content: `
             <p>
@@ -166,13 +166,13 @@ describe('Tags in relay server inbox', async () => {
           'https://purl.archive.org/miscellany'
         ],
         type: 'Create',
-        actor: nockFormat({ username }),
+        actor: nockFormat({ username, domain: remote }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Create', num: nextNum() }),
+        id: nockFormat({ username, type: 'Create', num: nextNum(), domain: remote }),
         object: {
           type: 'Note',
           id: noteId,
-          attributedTo: nockFormat({ username }),
+          attributedTo: nockFormat({ username, domain: remote }),
           to: 'as:Public',
           content: `
             <p>
@@ -248,13 +248,13 @@ describe('Tags in relay server inbox', async () => {
           'https://purl.archive.org/miscellany'
         ],
         type: 'Update',
-        actor: nockFormat({ username }),
+        actor: nockFormat({ username, domain: remote }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Update', num: nextNum() }),
+        id: nockFormat({ username, type: 'Update', num: nextNum(), domain: remote }),
         object: {
           type: 'Note',
           id: noteId,
-          attributedTo: nockFormat({ username }),
+          attributedTo: nockFormat({ username, domain: remote }),
           to: 'as:Public',
           content: `
             <p>
@@ -327,9 +327,9 @@ describe('Tags in relay server inbox', async () => {
           'https://purl.archive.org/miscellany'
         ],
         type: 'Delete',
-        actor: nockFormat({ username }),
+        actor: nockFormat({ username, domain: remote }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Delete', num: nextNum() }),
+        id: nockFormat({ username, type: 'Delete', num: nextNum(), domain: remote }),
         object: {
           type: 'Tombstone',
           id: noteId,
@@ -378,7 +378,7 @@ describe('Tags in relay server inbox', async () => {
     const url = `${origin}${path}`
     const username = 'test1'
     const date = new Date().toUTCString()
-    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum(), domain: remote })
     before(async () => {
       create = await as2.import({
         '@context': [
@@ -386,13 +386,13 @@ describe('Tags in relay server inbox', async () => {
           'https://purl.archive.org/miscellany'
         ],
         type: 'Create',
-        actor: nockFormat({ username }),
+        actor: nockFormat({ username, domain: remote }),
         to: 'as:Public',
-        id: nockFormat({ username, type: 'Create', num: nextNum() }),
+        id: nockFormat({ username, type: 'Create', num: nextNum(), domain: remote }),
         object: {
           type: 'Note',
           id: objectId,
-          attributedTo: nockFormat({ username }),
+          attributedTo: nockFormat({ username, domain: remote }),
           to: 'as:Public',
           content: `
             <p>
@@ -426,6 +426,168 @@ describe('Tags in relay server inbox', async () => {
     })
     it('should return 202 OK', async () => {
       assert.strictEqual(response.status, 202)
+    })
+  })
+
+  describe('Create activity with tag with #NoBots in bio', async () => {
+    let response = null
+    let create = null
+    let body
+    let digest
+    let signature
+    const path = `/user/${relayServerBot}/inbox`
+    const url = `${origin}${path}`
+    const username = 'test3'
+    const date = new Date().toUTCString()
+    const objectId = nockFormat({
+      username,
+      type: 'Note',
+      num: nextNum(),
+      domain: remote
+    })
+    before(async () => {
+      setBio(username, '<p>#NoBots</p>', remote)
+      create = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Create',
+        actor: nockFormat({ username, domain: remote }),
+        to: 'as:Public',
+        id: nockFormat({
+          username,
+          type: 'Create',
+          num: nextNum(),
+          domain: remote
+        }),
+        object: {
+          type: 'Note',
+          id: objectId,
+          attributedTo: nockFormat({ username, domain: remote }),
+          to: 'as:Public',
+          content: `
+            <p>
+              Hello, world!
+              <a href='https://${remote}/tag/greeting'>#greeting</a>
+            </p>
+          `,
+          tag: {
+            type: 'Hashtag',
+            href: `https://${remote}/tag/greeting`,
+            name: '#greeting'
+          }
+        }
+      })
+      body = await create.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest,
+        date
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+    it('should not share the content', async () => {
+      assert.ok(!(await shareInOutbox(app, 'greeting', objectId)))
+    })
+  })
+
+  describe('Create activity with tag with #NoTagsPub in bio', async () => {
+    let response = null
+    let create = null
+    let body
+    let digest
+    let signature
+    const path = `/user/${relayServerBot}/inbox`
+    const url = `${origin}${path}`
+    const username = 'test4'
+    const date = new Date().toUTCString()
+    const objectId = nockFormat({
+      username,
+      type: 'Note',
+      num: nextNum(),
+      domain: remote
+    })
+    before(async () => {
+      setBio(username, '<p>#NoTagsPub</p>', remote)
+      create = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Create',
+        actor: nockFormat({ username, domain: remote }),
+        to: 'as:Public',
+        id: nockFormat({
+          username,
+          type: 'Create',
+          num: nextNum(),
+          domain: remote
+        }),
+        object: {
+          type: 'Note',
+          id: objectId,
+          attributedTo: nockFormat({ username, domain: remote }),
+          to: 'as:Public',
+          content: `
+            <p>
+              Hello, world!
+              <a href='https://${remote}/tag/greeting'>#greeting</a>
+            </p>
+          `,
+          tag: {
+            type: 'Hashtag',
+            href: `https://${remote}/tag/greeting`,
+            name: '#greeting'
+          }
+        }
+      })
+      body = await create.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest,
+        date
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+    it('should not share the content', async () => {
+      assert.ok(!(await shareInOutbox(app, 'greeting', objectId)))
     })
   })
 })
