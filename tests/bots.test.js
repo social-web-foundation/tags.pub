@@ -42,7 +42,7 @@ describe('bots', async () => {
     bots = (await import('../lib/bots.js')).default
     assert.ok(bots)
     assert.strictEqual(typeof bots, 'object')
-    assert.strictEqual(Object.keys(bots).length, 4)
+    assert.strictEqual(Object.keys(bots).length, 5)
     assert.ok(bots['*'])
     assert.strictEqual(typeof bots['*'], 'object')
   })
@@ -137,5 +137,21 @@ describe('bots', async () => {
     await app.onIdle()
     assert.equal(postInbox[relayUser], 1)
     assert.equal(postInbox[thirdUser], 1)
+  })
+
+  describe('GET /user/_followback', async () => {
+    let response = null
+    it('should work without an error', async () => {
+      response = await request(app).get(`/user/_followback`)
+    })
+    it('should return 200 OK', async () => {
+      assert.strictEqual(response.status, 200)
+    })
+    it('should return AS2', async () => {
+      assert.strictEqual(response.type, 'application/activity+json')
+    })
+    it('should return an object', async () => {
+      assert.strictEqual(typeof response.body, 'object')
+    })
   })
 })
