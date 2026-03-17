@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/social-web-foundation/tags.pub#readme",
   "dependencies": {
-    "@evanp/activitypub-bot": "^0.25.1"
+    "@evanp/activitypub-bot": "^0.26.0"
   },
   "devDependencies": {
     "@evanp/activitypub-nock": "^0.6.0",
