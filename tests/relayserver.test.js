@@ -590,4 +590,85 @@ describe('Tags in relay server inbox', async () => {
       assert.ok(!(await shareInOutbox(app, 'greeting', objectId)))
     })
   })
+
+  describe('Create activity with tag with #NoBot in bio', async () => {
+    let response = null
+    let create = null
+    let body
+    let digest
+    let signature
+    const path = `/user/${relayServerBot}/inbox`
+    const url = `${origin}${path}`
+    const username = 'test5'
+    const date = new Date().toUTCString()
+    const objectId = nockFormat({
+      username,
+      type: 'Note',
+      num: nextNum(),
+      domain: remote
+    })
+    before(async () => {
+      setBio(username, '<p>#NoBot</p>', remote)
+      create = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Create',
+        actor: nockFormat({ username, domain: remote }),
+        to: 'as:Public',
+        id: nockFormat({
+          username,
+          type: 'Create',
+          num: nextNum(),
+          domain: remote
+        }),
+        object: {
+          type: 'Note',
+          id: objectId,
+          attributedTo: nockFormat({ username, domain: remote }),
+          to: 'as:Public',
+          content: `
+            <p>
+              Hello, world!
+              <a href='https://${remote}/tag/greeting'>#greeting</a>
+            </p>
+          `,
+          tag: {
+            type: 'Hashtag',
+            href: `https://${remote}/tag/greeting`,
+            name: '#greeting'
+          }
+        }
+      })
+      body = await create.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest,
+        date
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+    it('should not share the content', async () => {
+      assert.ok(!(await shareInOutbox(app, 'greeting', objectId)))
+    })
+  })
 })
