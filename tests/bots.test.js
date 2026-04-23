@@ -42,7 +42,7 @@ describe('bots', async () => {
     bots = (await import('../lib/bots.js')).default
     assert.ok(bots)
     assert.strictEqual(typeof bots, 'object')
-    assert.strictEqual(Object.keys(bots).length, 5)
+    assert.strictEqual(Object.keys(bots).length, 4)
     assert.ok(bots['*'])
     assert.strictEqual(typeof bots['*'], 'object')
   })
@@ -152,6 +152,28 @@ describe('bots', async () => {
     })
     it('should return an object', async () => {
       assert.strictEqual(typeof response.body, 'object')
+    })
+  })
+
+  describe('GET /user/_relayclient', async () => {
+    let response = null
+    it('should work without an error', async () => {
+      response = await request(app).get(`/user/_relayclient`)
+    })
+    it('should return 200 OK', async () => {
+      assert.strictEqual(response.status, 200)
+    })
+    it('should return AS2', async () => {
+      assert.strictEqual(response.type, 'application/activity+json')
+    })
+    it('should return an object', async () => {
+      assert.strictEqual(typeof response.body, 'object')
+    })
+    it('should return an object with an id matching the request', async () => {
+      assert.strictEqual(response.body.id, origin + `/user/_relayclient`)
+    })
+    it('should return an object with type Application', async () => {
+      assert.strictEqual(response.body.type, 'Application')
     })
   })
 })
