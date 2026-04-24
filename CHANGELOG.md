@@ -9,6 +9,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.2] - 2026-04-24
+
+### Fixed
+
+- Use activitypub-bot 0.45.3 to fix issues with Announce
+  activity summaries.
+
 ## [0.28.1] - 2026-04-24
 
 ### Fixed
