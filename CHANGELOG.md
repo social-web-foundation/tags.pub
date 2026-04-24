@@ -9,6 +9,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.1] - 2026-04-24
+
+### Fixed
+
+- Use activitypub-bot 0.45.2 to fix interop issues
+  with Misskey and Pixelfed.
+
 ## [0.28.0] - 2026-04-23
 
 ### Added
