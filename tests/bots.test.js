@@ -131,6 +131,9 @@ describe('bots', async () => {
     it('should return an object with a name matching the request', async () => {
       assert.strictEqual(response.body.name, `#${tag}`)
     })
+    it('should return an object with an icon', async () => {
+      assert.ok(response.body.icon)
+    })
   })
 
   it('subscribes to a remote relay on initialize', async () => {
