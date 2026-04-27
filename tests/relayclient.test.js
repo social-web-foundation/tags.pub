@@ -404,4 +404,105 @@ describe('Announce from a relay server via relay client', async () => {
       assert.ok(!(await shareInOutbox(app, 'untrusted', objectId)))
     })
   })
+
+  describe('Announce of a quiet-public Note (Public in cc)', async () => {
+    let response = null
+    let announce = null
+    let body
+    let digest
+    let signature
+    const path = '/shared/inbox'
+    const url = `${origin}${path}`
+    const date = new Date().toUTCString()
+    const authorUsername = 'carol'
+    const authorId = nockFormat({ username: authorUsername, domain: authorHost })
+    const authorFollowers = nockFormat({
+      username: authorUsername,
+      collection: 'followers',
+      domain: authorHost
+    })
+    const notePath = `/objects/note/${nextNum()}`
+    const objectId = `https://${authorHost}${notePath}`
+
+    before(async () => {
+      const quietNote = {
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Note',
+        id: objectId,
+        attributedTo: authorId,
+        to: authorFollowers,
+        cc: 'as:Public',
+        content: `
+          <p>
+            Quiet relayed hello!
+            <a href='https://${authorHost}/tag/quietannounce'>#quietannounce</a>
+          </p>
+        `,
+        tag: {
+          type: 'Hashtag',
+          href: `https://${authorHost}/tag/quietannounce`,
+          name: '#quietannounce'
+        }
+      }
+
+      nock(`https://${authorHost}`)
+        .persist()
+        .get(notePath)
+        .reply(200, JSON.stringify(quietNote), {
+          'Content-Type': 'application/activity+json'
+        })
+
+      announce = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Announce',
+        actor: relayActor,
+        to: `https://${relayHost}/user/${relayUsername}/followers`,
+        cc: 'as:Public',
+        id: nockFormat({
+          username: relayUsername,
+          type: 'Announce',
+          num: nextNum(),
+          domain: relayHost
+        }),
+        object: objectId
+      })
+      body = await announce.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username: relayUsername,
+        url,
+        digest,
+        date,
+        domain: relayHost
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+
+    it('should not share the quiet-public content', async () => {
+      assert.ok(!(await shareInOutbox(app, 'quietannounce', objectId)))
+    })
+  })
 })
