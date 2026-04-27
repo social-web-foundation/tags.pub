@@ -31,6 +31,7 @@
       <li><a href="#connect">Connecting a server</a></li>
       <li><a href="#privacy">Privacy</a></li>
       <li><a href="#optout">Opting out</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
@@ -161,6 +162,32 @@
       At the extreme end, you can also block the <code>tags.pub</code> domain, which should prevent tags.pub from seeing
       your content at all. This has the unfortunate side effect that you can&apos;t follow tags.pub accounts, though!
     </p>
+  </section>
+  <section id="faq">
+    <h2>FAQ</h2>
+    <section id="why">
+      <h3>
+        Why is tags.pub needed if we can already follow hashtags on Mastodon?
+      </h3>
+      <p>
+        <a href="https://joinmastodon.org/">Mastodon</a> has a feature to follow hashtags. However, it only shows tagged content that arrived
+        at your server for other reasons: because you follow the author, because someone else on your server follows the author, because the server uses a relay, replies, boosts, or a few other reasons.
+      </p>
+      <p>
+        For small servers with tens or hundreds of users, a lot of content never arrives in their inbox. Even for medium or large servers, the server doesn&apos;t receive everything the Fediverse has to offer.
+      </p>
+      <p>
+        And a lot of Fediverse server software does not support following a hashtag at all!
+      </p>
+      <p>
+        tags.pub is an attempt to bring more tagged content to more people on the Fediverse. It spreads tagged public content more broadly, but still respects the author&apos;s wishes for privacy.
+      </p>
+      <p>
+        We&apos;ve also started the process of defining an interface to Mastodon
+        so that following a hashtag on Mastodon taps into tags.pub; see
+        <a href="https://github.com/mastodon/fediverse_auxiliary_service_provider_specifications/issues/60">mastodon/fediverse_auxiliary_service_provider_specifications/issues/60</a> for discussions.
+      </p>
+    </section>
   </section>
   <section id="contact">
     <h2>Contact</h2>
