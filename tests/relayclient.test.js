@@ -310,4 +310,98 @@ describe('Announce from a relay server via relay client', async () => {
       assert.ok(!(await shareInOutbox(app, 'privategreeting', noteId)))
     })
   })
+
+  describe('Announce from an actor not in the announceAllowList', async () => {
+    let response = null
+    let announce = null
+    let body
+    let digest
+    let signature
+    const path = '/shared/inbox'
+    const url = `${origin}${path}`
+    const date = new Date().toUTCString()
+    const attackerUsername = 'eve'
+    const attackerActor = nockFormat({ username: attackerUsername, domain: authorHost })
+    const notePath = `/objects/note/${nextNum()}`
+    const objectId = `https://${authorHost}${notePath}`
+
+    before(async () => {
+      const taggedNote = {
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Note',
+        id: objectId,
+        attributedTo: attackerActor,
+        to: 'as:Public',
+        content: `
+          <p>
+            Untrusted hello!
+            <a href='https://${authorHost}/tag/untrusted'>#untrusted</a>
+          </p>
+        `,
+        tag: {
+          type: 'Hashtag',
+          href: `https://${authorHost}/tag/untrusted`,
+          name: '#untrusted'
+        }
+      }
+
+      nock(`https://${authorHost}`)
+        .persist()
+        .get(notePath)
+        .reply(200, JSON.stringify(taggedNote), {
+          'Content-Type': 'application/activity+json'
+        })
+
+      announce = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Announce',
+        actor: attackerActor,
+        to: 'as:Public',
+        id: nockFormat({
+          username: attackerUsername,
+          type: 'Announce',
+          num: nextNum(),
+          domain: authorHost
+        }),
+        object: objectId
+      })
+      body = await announce.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username: attackerUsername,
+        url,
+        digest,
+        date,
+        domain: authorHost
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+
+    it('should not share the content', async () => {
+      assert.ok(!(await shareInOutbox(app, 'untrusted', objectId)))
+    })
+  })
 })
