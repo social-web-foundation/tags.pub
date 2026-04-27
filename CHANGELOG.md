@@ -9,6 +9,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.4] - 2026-04-27
+
+### Fixed
+
+- tagbot icon added.
+- better description of tagbot, including trademark
+  disclaimer and links.
+- README.md
+- add FAQ to homepage
+- add Why is this needed? to FAQ
+
 ## [0.28.3] - 2026-04-26
 
 ### Fixed
