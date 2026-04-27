@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.3] - 2026-04-26
+
+### Fixed
+
+- Use activitypub-bot 0.45.4 to fix issues with throttled distributions failing instead of retrying.
+
 ## [0.28.2] - 2026-04-24
 
 ### Fixed
