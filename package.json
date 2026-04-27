@@ -1,6 +1,6 @@
 {
   "name": "@socialwebfoundation/tags.pub",
-  "version": "0.28.3",
+  "version": "0.28.4",
   "description": "global hashtag server",
   "main": "lib/index.js",
   "type": "module",
