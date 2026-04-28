@@ -9,6 +9,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.7] - 2026-04-27
+
+### Fixed
+
+- Upgrade activitypub-bot to avoid stall during Followback
+  bot initialization
+
 ## [0.28.6] - 2026-04-27
 
 ### Fixed
