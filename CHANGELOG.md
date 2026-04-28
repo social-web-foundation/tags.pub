@@ -9,6 +9,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.5] - 2026-04-27
+
+- Upgrade activitypub-bot to clean up followbackbot social graph.
+- Document followback bot in home page.
+
 ## [0.28.4] - 2026-04-27
 
 ### Fixed
