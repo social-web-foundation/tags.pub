@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.8] - 2026-04-29
+
+### Fixed
+
+- Upgrade activitypub-bot to log memory usage
+
 ## [0.28.7] - 2026-04-27
 
 ### Fixed
