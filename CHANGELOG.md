@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.9] - 2026-04-29
+
+### Fixed
+
+- Upgrade activitypub-bot to avoid infinite retries on 429
+
 ## [0.28.8] - 2026-04-29
 
 ### Fixed
