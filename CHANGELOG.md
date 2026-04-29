@@ -9,10 +9,19 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.10] - 2026-04-29
+
+### Fixed
+
+- Use anyascii to convert non-ascii hashtags into something
+  that works as a Fediverse handle.
+
 ## [0.28.9] - 2026-04-29
 
 ### Fixed
 
+- Reformat tagbot icon to have a white background and fit
+  in a circular display
 - Upgrade activitypub-bot to avoid infinite retries on 429
 
 ## [0.28.8] - 2026-04-29
