@@ -13,7 +13,7 @@ and this project adheres to
 
 ### Changed
 
-- Upgraded activitypub-bot to 0.45.12.
+- Upgraded activitypub-bot, activitypub-nock, and activitystrea.ms.
 
 ## [0.28.10] - 2026-04-29
 
