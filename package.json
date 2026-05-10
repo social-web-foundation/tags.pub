@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@evanp/activitypub-nock": "^0.9.4",
-    "activitystrea.ms": "^3.2.0",
+    "activitystrea.ms": "^3.3.3",
     "standard": "^17.1.2",
     "supertest": "^7.2.2"
   }
