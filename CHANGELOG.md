@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.11] - 2026-05-09
+
+### Changed
+
+- Upgraded activitypub-bot to 0.45.12.
+
 ## [0.28.10] - 2026-04-29
 
 ### Fixed
