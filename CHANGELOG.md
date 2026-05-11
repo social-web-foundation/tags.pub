@@ -13,6 +13,13 @@ and this project adheres to
 
 ### Changed
 
+- Upgraded activitypub-bot for more lenient handling of 404 signature error status (Threads) and mismatched object id/url pairs (GoToSocial).
+- Upgraded activitypub-nock for better match between object id and URL.
+
+## [0.28.14] - 2026-05-11
+
+### Changed
+
 - Upgraded activitypub-bot for dependencies and better handling of
 unusual X-RateLimit-Reset values.
 
