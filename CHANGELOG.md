@@ -9,6 +9,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.14] - 2026-05-11
+
+### Changed
+
+- Upgraded activitypub-bot for dependencies and better handling of
+unusual X-RateLimit-Reset values.
+
+
 ## [0.28.13] - 2026-05-10
 
 ### Changed
