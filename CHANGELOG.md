@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.13] - 2026-05-10
+
+### Changed
+
+- Upgraded activitypub-bot to have better error handling in queues and depend on inbox forwarding for remote collections if possible.
+
 ## [0.28.12] - 2026-05-10
 
 ### Changed
