@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.12] - 2026-05-10
+
+### Changed
+
+- Upgraded activitypub-bot to use persistent remote object cache and reduce memory usage.
+
 ## [0.28.11] - 2026-05-09
 
 ### Changed
