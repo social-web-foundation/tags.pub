@@ -9,7 +9,13 @@ and this project adheres to
 
 ## [Unreleased]
 
-## [0.28.14] - 2026-05-11
+## [0.28.16] - 2026-05-12
+
+### Fixed
+
+- Upgraded activitypub-bot to stop memory leak.
+
+## [0.28.15] - 2026-05-11
 
 ### Changed
 
