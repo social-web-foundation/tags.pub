@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.28.17] - 2026-05-14
+
+### Fixed
+
+- Upgraded activitypub-bot to use keep-alive connections and to properly timeout requests.
+
 ## [0.28.16] - 2026-05-12
 
 ### Fixed
