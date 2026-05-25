@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.29.1] - 2026-05-25
+
+### Changed
+
+- Upgraded activitypub-bot with better index for active user queries.
+
 ## [0.29.0] - 2026-05-25
 
 ### Changed
