@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.29.2] - 2026-05-25
+
+- Upgraded activitypub-bot with persistent caching for active user queries.
+
 ## [0.29.1] - 2026-05-25
 
 ### Changed
