@@ -9,6 +9,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-05-25
+
+### Changed
+
+- Upgraded activitypub-bot with more nodeinfo
+  endpoints, better SSRF protection, and better
+  XSS protection.
+
 ## [0.28.17] - 2026-05-14
 
 ### Fixed
