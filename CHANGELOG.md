@@ -9,7 +9,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.29.3] - 2026-05-26
+
+### Fixed
+
+- Upgrade activitypub-bot with better checks for actor-activity relationships
+  in ActivityHandler.
+
 ## [0.29.2] - 2026-05-25
+
+### Changed
 
 - Upgraded activitypub-bot with persistent caching for active user queries.
 
