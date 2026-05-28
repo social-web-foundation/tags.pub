@@ -9,6 +9,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-05-28
+
+### Changed
+
+- Upgrade activitypub-bot with /robots.txt, /favicon.ico, and
+  other bug fixes and optimizations.
+
 ## [0.29.3] - 2026-05-26
 
 ### Fixed
