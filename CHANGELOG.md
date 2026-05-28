@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.30.1] - 2026-05-28
+
+### Changed
+
+- Upgrade activitypub-bot with better status codes for invalid signatures or missing keys.
+
 ## [0.30.0] - 2026-05-28
 
 ### Changed
