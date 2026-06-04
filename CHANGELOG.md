@@ -9,6 +9,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.30.2] - 2026-06-04
+
+### Fixed
+
+- Check error codes when fetching actor to determine if it suggests that the actor is blocking the server or bot. If so, don't share content.
+
+### Changed
+
+- Upgrade activitypub-bot with less aggressive caching for actors so that adding #NoBots or equivalent to profile will be respected immediately.
+
 ## [0.30.1] - 2026-05-28
 
 ### Changed

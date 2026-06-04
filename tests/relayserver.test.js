@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import request from 'supertest'
 import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
-import { nockSetup, nockFormat, nockSignature, setBio } from '@evanp/activitypub-nock'
+import { nockSetup, nockFormat, nockSignature, setBio, setActorStatus, clearActorStatus } from '@evanp/activitypub-nock'
 import { makeDigest } from './utils/digest.js'
 
 const nextNum = (() => {
@@ -1002,4 +1002,98 @@ describe('Tags in relay server inbox', async () => {
       assert.ok(!(await shareInOutbox(app, 'greeting', secondObjectId)))
     })
   })
+
+  for (const statusCode of [401, 403, 404, 410]) {
+    describe(`Author starts returning ${statusCode} on actor fetch after a previous shared post`, async () => {
+      const username = `blocked${statusCode}`
+      const path = `/user/${relayServerBot}/inbox`
+      const url = `${origin}${path}`
+      const firstObjectId = nockFormat({
+        username,
+        type: 'Note',
+        num: nextNum(),
+        domain: remote
+      })
+      const secondObjectId = nockFormat({
+        username,
+        type: 'Note',
+        num: nextNum(),
+        domain: remote
+      })
+
+      async function postCreate (objectId) {
+        const date = new Date().toUTCString()
+        const create = await as2.import({
+          '@context': [
+            'https://www.w3.org/ns/activitystreams',
+            'https://purl.archive.org/miscellany'
+          ],
+          type: 'Create',
+          actor: nockFormat({ username, domain: remote }),
+          to: 'as:Public',
+          id: nockFormat({
+            username,
+            type: 'Create',
+            num: nextNum(),
+            domain: remote
+          }),
+          object: {
+            type: 'Note',
+            id: objectId,
+            attributedTo: nockFormat({ username, domain: remote }),
+            to: 'as:Public',
+            content: `
+              <p>
+                Hello, world!
+                <a href='https://${remote}/tag/greeting'>#greeting</a>
+              </p>
+            `,
+            tag: {
+              type: 'Hashtag',
+              href: `https://${remote}/tag/greeting`,
+              name: '#greeting'
+            }
+          }
+        })
+        const body = await create.write()
+        const digest = makeDigest(body)
+        const signature = await nockSignature({
+          method: 'POST',
+          username,
+          url,
+          digest,
+          date
+        })
+        const response = await request(app)
+          .post(path)
+          .send(body)
+          .set('Signature', signature)
+          .set('Date', date)
+          .set('Host', host)
+          .set('Digest', digest)
+          .set('Content-Type', 'application/activity+json')
+        assert.strictEqual(response.status, 202)
+        await app.onIdle()
+      }
+
+      before(async () => {
+        clearActorStatus(username, remote)
+        await postCreate(firstObjectId)
+        setActorStatus(username, statusCode, remote)
+        await postCreate(secondObjectId)
+      })
+
+      after(() => {
+        clearActorStatus(username, remote)
+      })
+
+      it('should share the first post (before the status flip)', async () => {
+        assert.ok(await shareInOutbox(app, 'greeting', firstObjectId))
+      })
+
+      it(`should not share the second post (after the actor starts returning ${statusCode})`, async () => {
+        assert.ok(!(await shareInOutbox(app, 'greeting', secondObjectId)))
+      })
+    })
+  }
 })
