@@ -14,7 +14,7 @@ More information is available at [https://tags.pub/](https://tags.pub/).
 
 ## Security
 
-Vulnerabilities can be reported privately at https://github.com/social-web-foundation/tags.pub/security
+Vulnerabilities can be reported privately at <https://github.com/social-web-foundation/tags.pub/security>
 
 ## Contributing
 
