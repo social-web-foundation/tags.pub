@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.30.4] - 2026-06-04
+
+### Added
+
+- Links to Social Web Foundation and Sovereign Tech Agency much earlier in the document.
+
 ## [0.30.3] - 2026-06-04
 
 ### Added
