@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.30.3] - 2026-06-04
+
+### Added
+
+- Note in documentation about waiting a few minutes after adding tags to your profile.
+
 ## [0.30.2] - 2026-06-04
 
 ### Fixed
