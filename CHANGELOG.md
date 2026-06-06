@@ -14,13 +14,13 @@ and this project adheres to
 ### Fixed
 
 - Check for block on Announce.object as well as on the actor, to get around bug in Mastodon that lets remote servers fetch an actor even if blocked.
-- Links to Social Web Foundation only in the document.
+- Links to Social Web Foundation only in the home page.
 
 ## [0.30.4] - 2026-06-04
 
 ### Added
 
-- Links to Social Web Foundation and Sovereign Tech Agency much earlier in the document.
+- Links to Social Web Foundation and Sovereign Tech Agency much earlier in the home page.
 
 ## [0.30.3] - 2026-06-04
 
