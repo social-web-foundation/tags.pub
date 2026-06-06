@@ -14,6 +14,7 @@ and this project adheres to
 ### Fixed
 
 - Check for block on Announce.object as well as on the actor, to get around bug in Mastodon that lets remote servers fetch an actor even if blocked.
+- Links to Social Web Foundation only in the document.
 
 ## [0.30.4] - 2026-06-04
 
