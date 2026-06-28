@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.31.0] - 2026-06-28
+
+## Added
+
+- Upgrade activitypub-bot with better nodeinfo standard support and support for forceUnsubscribe in MastodonRelayClient
+
 ## [0.30.6] - 2026-06-28
 
 ### Added
