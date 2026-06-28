@@ -11,9 +11,11 @@ and this project adheres to
 
 ## [0.31.0] - 2026-06-28
 
-## Added
+### Added
 
 - Upgrade activitypub-bot with better nodeinfo standard support and support for forceUnsubscribe in MastodonRelayClient
+- FORCE_UNSUBSCRIBE environment variable to unsubscribe the relay bot from
+  remote servers
 
 ## [0.30.6] - 2026-06-28
 

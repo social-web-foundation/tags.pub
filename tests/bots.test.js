@@ -18,17 +18,28 @@ describe('bots', async () => {
   const origin = `https://${host}`
   const databaseUrl = 'sqlite::memory:'
   const tag = 'linux'
+  const forceUnsubHost1 = 'forceunsubone.bots.test'
+  const forceUnsubHost2 = 'forceunsubtwo.bots.test'
+  const forceUnsubUser1 = 'forceunsubone'
+  const forceUnsubUser2 = 'forceunsubtwo'
 
   let bots = null
   let app = null
   let relay1 = null
   let relay2 = null
+  let forceUnsub1 = null
+  let forceUnsub2 = null
 
   before(async () => {
     nockSetup(remoteHost)
     nockSetup(thirdHost)
+    nockSetup(forceUnsubHost1)
+    nockSetup(forceUnsubHost2)
     relay1 = nockFormat({ username: relayUser, domain: remoteHost })
     relay2 = nockFormat({ username: thirdUser, domain: thirdHost })
+    forceUnsub1 = nockFormat({ username: forceUnsubUser1, domain: forceUnsubHost1 })
+    forceUnsub2 = nockFormat({ username: forceUnsubUser2, domain: forceUnsubHost2 })
+    process.env.FORCE_UNSUBSCRIBE = [forceUnsub1, forceUnsub2].join(',')
   })
 
   after(async () => {
@@ -178,5 +189,11 @@ describe('bots', async () => {
     it('should return an object with type Application', async () => {
       assert.strictEqual(response.body.type, 'Application')
     })
+  })
+
+  it('sends an unsubscribe to each FORCE_UNSUBSCRIBE actor on initialize', async () => {
+    await app.onIdle()
+    assert.equal(postInbox[forceUnsubUser1], 1)
+    assert.equal(postInbox[forceUnsubUser2], 1)
   })
 })
