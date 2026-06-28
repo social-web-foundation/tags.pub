@@ -9,6 +9,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.30.6] - 2026-06-28
+
+### Added
+
+- Documentation about using the bot notifications filter option in Mastodon 4.6.
+
+### Removed
+
+- Documentation about using open relays.
+
 ## [0.30.5] - 2026-06-06
 
 ### Fixed
