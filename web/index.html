@@ -78,7 +78,7 @@
     </p>
     <p>
       The first data source is Fediverse servers that opt in to extend their users&apos; reach by participating in
-      tags.pub directly. They use tags.pub as a relay, instead of one of the other available relays. Note that unlike
+      tags.pub directly. They use tags.pub as a relay. Note that unlike
       most relays, tags.pub does not share all public data with all servers -- the follow and boost mechanism described
       above is used instead. So, content flows in just one direction across the relay interface.
     </p>
@@ -91,6 +91,11 @@
     <p>
       Disabling and/or deleting the tags.pub relay account from your server settings <strong>should</strong> stop any
       further content from going to tags.pub.
+    </p>
+    <p>
+      Unlike most relays, users are notified when their content is
+      shared. Individual users can <a href="#optout">opt out</a> of tags.pub,
+      even if their server is opted in.
     </p>
     <p>
       The second option, if you are not a server administrator, is to connect to
@@ -182,6 +187,25 @@
         We&apos;ve also started the process of defining an interface to Mastodon
         so that following a hashtag on Mastodon taps into tags.pub; see
         <a href="https://github.com/mastodon/fediverse_auxiliary_service_provider_specifications/issues/60">mastodon/fediverse_auxiliary_service_provider_specifications/issues/60</a> for discussions.
+      </p>
+    </section>
+    <section id="notifications">
+      <h3>
+        How can I share my content but hide tags.pub notifications?
+      </h3>
+      <p>
+        If your server uses
+        <a href="https://joinmastodon.org/">Mastodon</a>
+        4.6, you can disable notifications from bots. Here's how:
+      </p>
+      <ul>
+        <li>In the Mastodon Web UI, click Notifications (the bell icon) to view your notifications.</li>
+        <li>Then, click the menu at the top right corner (looks like an up-down arrow). This opens up your notification controls.</li>
+        <li>Look for the Bots drop down. Change it from Accept to Filter or Ignore.</li>
+      </ul>
+      <p>
+        This will filter or ignore notifications from tags.pub and other bots on
+        the ActivityPub network.
       </p>
     </section>
   </section>
