@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.31.1] - 2026-06-28
+
+### Added
+
+- Documentation on how to opt in to the service
+
 ## [0.31.0] - 2026-06-28
 
 ### Added
