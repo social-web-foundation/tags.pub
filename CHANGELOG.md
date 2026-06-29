@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.31.3] - 2026-06-28
+
+### Fixed
+
+- Link to opt-in section
+
 ## [0.31.2] - 2026-06-28
 
 ### Updated
