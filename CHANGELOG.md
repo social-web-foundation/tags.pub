@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.31.2] - 2026-06-28
+
+### Updated
+
+- activitypub-bot to log subject in inboxes
+
 ## [0.31.1] - 2026-06-28
 
 ### Added
