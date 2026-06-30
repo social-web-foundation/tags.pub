@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.32.0] - 2026-06-30
+
+### Updated
+
+- activitypub-bot to include domain blocking
+
 ## [0.31.3] - 2026-06-28
 
 ### Fixed
