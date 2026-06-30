@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.32.1] - 2026-06-30
+
+### Updated
+
+- activitypub-bot to fix problems with Delete activities
+
 ## [0.32.0] - 2026-06-30
 
 ### Updated
