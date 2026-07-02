@@ -9,7 +9,13 @@ and this project adheres to
 
 ## [Unreleased]
 
-## [0.33.0] - 2026-07-01
+## [0.33.1] - 2026-07-02
+
+### Fixed
+
+Blocklist wasn't working on mixed-case tagnames.
+
+## [0.33.0] - 2026-07-02
 
 ### Added
 
