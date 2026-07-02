@@ -25,6 +25,7 @@ describe('bots', async () => {
   const forceUnsubUser1 = 'forceunsubone'
   const forceUnsubUser2 = 'forceunsubtwo'
   const blockedTag = 'blockedtag'
+  const blockedTagUpper = blockedTag.toUpperCase()
   const signerHost = 'signer.bots.test'
   const signerUser = 'poster'
 
@@ -245,6 +246,74 @@ describe('bots', async () => {
           attributedTo: nockFormat({ username: signerUser, domain: signerHost }),
           to: `${origin}/user/${blockedTag}`,
           content: 'Hello, blocked tag!'
+        }
+      })
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username: signerUser,
+        url,
+        digest,
+        date,
+        domain: signerHost
+      })
+    })
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+    })
+    it('should return 404 Not Found', async () => {
+      assert.strictEqual(response.status, 404)
+    })
+  })
+
+  describe('GET /user/{blockedTagUpper} for a capitalized blocklisted hashtag', async () => {
+    let response = null
+    it('should work without an error', async () => {
+      response = await request(app).get(`/user/${blockedTagUpper}`)
+    })
+    it('should return 404 Not Found', async () => {
+      assert.strictEqual(response.status, 404)
+    })
+  })
+
+  describe('GET /profile/{blockedTagUpper} for a capitalized blocklisted hashtag', async () => {
+    let response = null
+    it('should work without an error', async () => {
+      response = await request(app).get(`/profile/${blockedTagUpper}`)
+    })
+    it('should return 404 Not Found', async () => {
+      assert.strictEqual(response.status, 404)
+    })
+  })
+
+  describe('POST /user/{blockedTagUpper}/inbox for a capitalized blocklisted hashtag', async () => {
+    let response = null
+    let body = null
+    let digest = null
+    let signature = null
+    const path = `/user/${blockedTagUpper}/inbox`
+    const url = `${origin}${path}`
+    const date = new Date().toUTCString()
+    before(async () => {
+      body = JSON.stringify({
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        type: 'Create',
+        id: `https://${signerHost}/user/${signerUser}/create/2`,
+        actor: nockFormat({ username: signerUser, domain: signerHost }),
+        to: `${origin}/user/${blockedTagUpper}`,
+        object: {
+          type: 'Note',
+          id: `https://${signerHost}/user/${signerUser}/note/2`,
+          attributedTo: nockFormat({ username: signerUser, domain: signerHost }),
+          to: `${origin}/user/${blockedTagUpper}`,
+          content: 'Hello, capitalized blocked tag!'
         }
       })
       digest = makeDigest(body)
