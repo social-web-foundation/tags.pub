@@ -3,7 +3,7 @@ import assert from 'node:assert'
 import request from 'supertest'
 import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
-import { nockSetup, nockFormat, nockSignature } from '@evanp/activitypub-nock'
+import { nockSetup, nockFormat, nockSignature, postInbox } from '@evanp/activitypub-nock'
 import { makeDigest } from './utils/digest.js'
 
 const nextNum = (() => {
@@ -68,6 +68,7 @@ describe('Tags in shared inbox', async () => {
   let app = null
 
   before(async () => {
+    process.env.HASHTAG_BLOCKLIST = 'blockedtag'
     const bots = (await import('../lib/bots.js')).default
     app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
     nockSetup(remote)
@@ -622,6 +623,283 @@ describe('Tags in shared inbox', async () => {
     })
     it('should not undo the share (Delete was skipped)', async () => {
       assert.ok(!(await unshareInOutbox(app, 'quietdelete', objectId)))
+    })
+  })
+
+  describe('Create activity with a blocked tag and an allowed tag', async () => {
+    let response = null
+    let create = null
+    let body
+    let digest
+    let signature
+    const path = '/shared/inbox'
+    const url = `${origin}${path}`
+    const username = 'blockauthor'
+    const date = new Date().toUTCString()
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
+    before(async () => {
+      create = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Create',
+        actor: nockFormat({ username }),
+        to: 'as:Public',
+        id: nockFormat({ username, type: 'Create', num: nextNum() }),
+        object: {
+          type: 'Note',
+          id: objectId,
+          attributedTo: nockFormat({ username }),
+          to: 'as:Public',
+          content: `
+            <p>
+              Hello!
+              <a href='https://${remote}/tag/blockedtag'>#blockedtag</a>
+              <a href='https://${remote}/tag/allowedtag'>#allowedtag</a>
+            </p>
+          `,
+          tag: [{
+            type: 'Hashtag',
+            href: `https://${remote}/tag/blockedtag`,
+            name: '#blockedtag'
+          }, {
+            type: 'Hashtag',
+            href: `https://${remote}/tag/allowedtag`,
+            name: '#allowedtag'
+          }]
+        }
+      })
+      body = await create.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest,
+        date
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+    it('should share via the allowed tag bot', async () => {
+      assert.ok(await shareInOutbox(app, 'allowedtag', objectId))
+    })
+    it('should not share via the blocked tag bot', async () => {
+      assert.strictEqual(postInbox[username], 1)
+    })
+  })
+
+  describe('Update activity with a blocked tag and an allowed tag', async () => {
+    let response = null
+    let update = null
+    let body
+    let digest
+    let signature
+    const path = '/shared/inbox'
+    const url = `${origin}${path}`
+    const username = 'updauthor'
+    const date = new Date().toUTCString()
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
+    before(async () => {
+      update = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Update',
+        actor: nockFormat({ username }),
+        to: 'as:Public',
+        id: nockFormat({ username, type: 'Update', num: nextNum() }),
+        object: {
+          type: 'Note',
+          id: objectId,
+          attributedTo: nockFormat({ username }),
+          to: 'as:Public',
+          content: `
+            <p>
+              Updated hello!
+              <a href='https://${remote}/tag/blockedtag'>#blockedtag</a>
+              <a href='https://${remote}/tag/allowedupd'>#allowedupd</a>
+            </p>
+          `,
+          tag: [{
+            type: 'Hashtag',
+            href: `https://${remote}/tag/blockedtag`,
+            name: '#blockedtag'
+          }, {
+            type: 'Hashtag',
+            href: `https://${remote}/tag/allowedupd`,
+            name: '#allowedupd'
+          }]
+        }
+      })
+      body = await update.write()
+      digest = makeDigest(body)
+      signature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest,
+        date
+      })
+    })
+
+    it('should work without an error', async () => {
+      response = await request(app)
+        .post(path)
+        .send(body)
+        .set('Signature', signature)
+        .set('Date', date)
+        .set('Host', host)
+        .set('Digest', digest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(response)
+      await app.onIdle()
+    })
+    it('should return 202 OK', async () => {
+      assert.strictEqual(response.status, 202)
+    })
+    it('should share via the allowed tag bot', async () => {
+      assert.ok(await shareInOutbox(app, 'allowedupd', objectId))
+    })
+    it('should not share via the blocked tag bot', async () => {
+      assert.strictEqual(postInbox[username], 1)
+    })
+  })
+
+  describe('Delete activity with a blocked tag and an allowed tag', async () => {
+    let createResponse = null
+    let deleteResponse = null
+    let createBody
+    let createDigest
+    let createSignature
+    let deleteBody
+    let deleteDigest
+    let deleteSignature
+    const path = '/shared/inbox'
+    const url = `${origin}${path}`
+    const username = 'delauthor'
+    const createDate = new Date().toUTCString()
+    const deleteDate = new Date().toUTCString()
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
+    before(async () => {
+      const create = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Create',
+        actor: nockFormat({ username }),
+        to: 'as:Public',
+        id: nockFormat({ username, type: 'Create', num: nextNum() }),
+        object: {
+          type: 'Note',
+          id: objectId,
+          attributedTo: nockFormat({ username }),
+          to: 'as:Public',
+          content: `
+            <p>
+              Hello then goodbye!
+              <a href='https://${remote}/tag/blockedtag'>#blockedtag</a>
+              <a href='https://${remote}/tag/alloweddel'>#alloweddel</a>
+            </p>
+          `,
+          tag: [{
+            type: 'Hashtag',
+            href: `https://${remote}/tag/blockedtag`,
+            name: '#blockedtag'
+          }, {
+            type: 'Hashtag',
+            href: `https://${remote}/tag/alloweddel`,
+            name: '#alloweddel'
+          }]
+        }
+      })
+      createBody = await create.write()
+      createDigest = makeDigest(createBody)
+      createSignature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest: createDigest,
+        date: createDate
+      })
+      const del = await as2.import({
+        '@context': [
+          'https://www.w3.org/ns/activitystreams',
+          'https://purl.archive.org/miscellany'
+        ],
+        type: 'Delete',
+        actor: nockFormat({ username }),
+        to: 'as:Public',
+        id: nockFormat({ username, type: 'Delete', num: nextNum() }),
+        object: {
+          type: 'Tombstone',
+          id: objectId,
+          formerType: 'Note'
+        }
+      })
+      deleteBody = await del.write()
+      deleteDigest = makeDigest(deleteBody)
+      deleteSignature = await nockSignature({
+        method: 'POST',
+        username,
+        url,
+        digest: deleteDigest,
+        date: deleteDate
+      })
+    })
+
+    it('should share on the Create without an error', async () => {
+      createResponse = await request(app)
+        .post(path)
+        .send(createBody)
+        .set('Signature', createSignature)
+        .set('Date', createDate)
+        .set('Host', host)
+        .set('Digest', createDigest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(createResponse)
+      await app.onIdle()
+    })
+    it('should return 202 OK for the Create', async () => {
+      assert.strictEqual(createResponse.status, 202)
+    })
+    it('should process the Delete without an error', async () => {
+      deleteResponse = await request(app)
+        .post(path)
+        .send(deleteBody)
+        .set('Signature', deleteSignature)
+        .set('Date', deleteDate)
+        .set('Host', host)
+        .set('Digest', deleteDigest)
+        .set('Content-Type', 'application/activity+json')
+      assert.ok(deleteResponse)
+      await app.onIdle()
+    })
+    it('should return 202 OK for the Delete', async () => {
+      assert.strictEqual(deleteResponse.status, 202)
+    })
+    it('should undo the share via the allowed tag bot', async () => {
+      assert.ok(await unshareInOutbox(app, 'alloweddel', objectId))
+    })
+    it('should not share or unshare via the blocked tag bot', async () => {
+      assert.strictEqual(postInbox[username], 2)
     })
   })
 })
