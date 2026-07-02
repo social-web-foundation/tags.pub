@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.33.3] - 2026-07-02
+
+### Updated
+
+- activitypub-bot to 0.51.2 to hide profile pages from search engines.
+
 ## [0.33.2] - 2026-07-02
 
 ### Added
