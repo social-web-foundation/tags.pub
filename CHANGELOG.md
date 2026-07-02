@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.33.0] - 2026-07-01
+
+### Added
+
+- HASHTAG_BLOCKLIST environment variable is a comma-separated list of hashtags to skip on the server. Hashtags on this list will not be given profiles or user accounts.
+
 ## [0.32.1] - 2026-06-30
 
 ### Updated
