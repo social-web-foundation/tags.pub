@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.33.2] - 2026-07-02
+
+### Added
+
+- Documentation on personal hashtag handling.
+
 ## [0.33.1] - 2026-07-02
 
 ### Fixed
