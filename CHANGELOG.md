@@ -9,6 +9,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.35.1] - 2026-08-17
+
+### Updated
+
+- 14 dependencies
+
 ## [0.35.0] - 2026-08-17
 
 ### Updated
