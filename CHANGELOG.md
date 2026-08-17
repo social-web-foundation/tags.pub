@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Updated
+
+- dependencies: activitystrea.ms, activitypub-bot, activitypub-nock
+
 ## [0.34.0] - 2026-08-07
 
 ### Added
