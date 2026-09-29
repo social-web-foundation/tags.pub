@@ -9,6 +9,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Updated
+
+- activitypub-bot to 0.51.2.
+- Transitive dependencies: @humanfs/core, @humanfs/node, csv-parse,
+  iconv-lite, js-yaml, lru.min, minimatch, mysql2, and qs.
+- GitHub Actions: actions/checkout and actions/setup-node to v7.
+
 ## [0.35.1] - 2026-08-17
 
 ### Updated
@@ -697,3 +704,99 @@ unusual X-RateLimit-Reset values.
 ### Changed
 
 - Upgrade activitypub-bot (through 0.16.3)
+
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.1...HEAD
+[0.35.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.0...v0.35.1
+[0.35.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.34.0...v0.35.0
+[0.34.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.33.3...v0.34.0
+[0.33.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.33.2...v0.33.3
+[0.33.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.33.1...v0.33.2
+[0.33.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.33.0...v0.33.1
+[0.33.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.32.1...v0.33.0
+[0.32.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.32.0...v0.32.1
+[0.32.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.31.3...v0.32.0
+[0.31.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.31.2...v0.31.3
+[0.31.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.31.1...v0.31.2
+[0.31.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.31.0...v0.31.1
+[0.31.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.30.6...v0.31.0
+[0.30.6]: https://github.com/social-web-foundation/tags.pub/compare/v0.30.5...v0.30.6
+[0.30.5]: https://github.com/social-web-foundation/tags.pub/compare/v0.30.4...v0.30.5
+[0.30.4]: https://github.com/social-web-foundation/tags.pub/compare/v0.30.3...v0.30.4
+[0.30.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.30.2...v0.30.3
+[0.30.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.30.1...v0.30.2
+[0.30.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.30.0...v0.30.1
+[0.30.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.29.3...v0.30.0
+[0.29.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.29.2...v0.29.3
+[0.29.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.29.1...v0.29.2
+[0.29.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.29.0...v0.29.1
+[0.29.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.17...v0.29.0
+[0.28.17]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.16...v0.28.17
+[0.28.16]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.15...v0.28.16
+[0.28.15]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.14...v0.28.15
+[0.28.14]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.13...v0.28.14
+[0.28.13]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.12...v0.28.13
+[0.28.12]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.11...v0.28.12
+[0.28.11]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.10...v0.28.11
+[0.28.10]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.9...v0.28.10
+[0.28.9]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.8...v0.28.9
+[0.28.8]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.7...v0.28.8
+[0.28.7]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.6...v0.28.7
+[0.28.6]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.5...v0.28.6
+[0.28.5]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.4...v0.28.5
+[0.28.4]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.3...v0.28.4
+[0.28.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.2...v0.28.3
+[0.28.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.1...v0.28.2
+[0.28.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.28.0...v0.28.1
+[0.28.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.27.3...v0.28.0
+[0.27.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.27.2...v0.27.3
+[0.27.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.27.1...v0.27.2
+[0.27.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.27.0...v0.27.1
+[0.27.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.26.0...v0.27.0
+[0.26.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.25.4...v0.26.0
+[0.25.4]: https://github.com/social-web-foundation/tags.pub/compare/v0.25.3...v0.25.4
+[0.25.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.25.2...v0.25.3
+[0.25.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.25.1...v0.25.2
+[0.25.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.25.0...v0.25.1
+[0.25.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.24.0...v0.25.0
+[0.24.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.23.1...v0.24.0
+[0.23.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.23.0...v0.23.1
+[0.23.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.22.1...v0.23.0
+[0.22.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.22.0...v0.22.1
+[0.22.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.21.0...v0.22.0
+[0.21.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.20.0...v0.21.0
+[0.20.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.19.0...v0.20.0
+[0.19.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.18.2...v0.19.0
+[0.18.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.18.1...v0.18.2
+[0.18.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.18.0...v0.18.1
+[0.18.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.17.1...v0.18.0
+[0.17.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.17.0...v0.17.1
+[0.17.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.16.3...v0.17.0
+[0.16.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.16.2...v0.16.3
+[0.16.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.16.1...v0.16.2
+[0.16.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.16.0...v0.16.1
+[0.16.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.15.2...v0.16.0
+[0.15.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.15.1...v0.15.2
+[0.15.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.15.0...v0.15.1
+[0.15.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.14.3...v0.15.0
+[0.14.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.14.2...v0.14.3
+[0.14.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.14.1...v0.14.2
+[0.14.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.14.0...v0.14.1
+[0.14.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.13.4...v0.14.0
+[0.13.4]: https://github.com/social-web-foundation/tags.pub/compare/v0.13.3...v0.13.4
+[0.13.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.13.2...v0.13.3
+[0.13.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.13.1...v0.13.2
+[0.13.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.13.0...v0.13.1
+[0.13.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.9.1...v0.10.0
+[0.9.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.7.1...v0.8.0
+[0.7.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/social-web-foundation/tags.pub/tree/v0.2.0
