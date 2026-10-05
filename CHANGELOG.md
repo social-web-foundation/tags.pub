@@ -9,6 +9,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.36.0] - 2026-10-05
+
 ### Updated
 
 - Dependencies: activitypub-bot, activitypub-nock, activitystrea.ms, and supertest,
@@ -712,7 +714,8 @@ unusual X-RateLimit-Reset values.
 
 - Upgrade activitypub-bot (through 0.16.3)
 
-[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.2...HEAD
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.36.0...HEAD
+[0.36.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.2...v0.36.0
 [0.35.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.1...v0.35.2
 [0.35.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.0...v0.35.1
 [0.35.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.34.0...v0.35.0
