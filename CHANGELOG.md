@@ -9,6 +9,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Updated
+
+- Dependencies: supertest, and transitive dependencies ip-address and undici.
+
 ## [0.35.2] - 2026-09-29
 
 ### Updated
