@@ -11,8 +11,8 @@ and this project adheres to
 
 ### Updated
 
-- Dependencies: activitypub-bot and supertest, and transitive dependencies
-  ip-address and undici.
+- Dependencies: activitypub-bot, activitypub-nock, activitystrea.ms, and supertest,
+  and transitive dependencies ip-address and undici.
 
 ## [0.35.2] - 2026-09-29
 

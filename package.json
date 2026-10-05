@@ -28,8 +28,8 @@
     "any-ascii": "^0.3.3"
   },
   "devDependencies": {
-    "@evanp/activitypub-nock": "^1.0.0",
-    "activitystrea.ms": "^4.0.0",
+    "@evanp/activitypub-nock": "^1.0.1",
+    "activitystrea.ms": "^4.0.2",
     "standard": "^17.1.2",
     "supertest": "^7.3.0"
   },
