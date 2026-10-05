@@ -11,7 +11,8 @@ and this project adheres to
 
 ### Updated
 
-- Dependencies: supertest, and transitive dependencies ip-address and undici.
+- Dependencies: activitypub-bot and supertest, and transitive dependencies
+  ip-address and undici.
 
 ## [0.35.2] - 2026-09-29
 
