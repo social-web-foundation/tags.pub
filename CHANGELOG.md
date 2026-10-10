@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- markdownlint-configure-file { "MD024": { "siblings_only": true } } -->
+
 All notable changes to this project will be documented in this file.
 
 The format is based on
@@ -8,6 +10,12 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.37.0] - 2026-10-10
+
+### Updated
+
+- Dependency: activitypub-bot.
 
 ## [0.36.0] - 2026-10-05
 
@@ -210,7 +218,6 @@ Blocklist wasn't working on mixed-case tagnames.
 
 - Upgraded activitypub-bot for dependencies and better handling of
 unusual X-RateLimit-Reset values.
-
 
 ## [0.28.13] - 2026-05-10
 
@@ -714,7 +721,8 @@ unusual X-RateLimit-Reset values.
 
 - Upgrade activitypub-bot (through 0.16.3)
 
-[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.36.0...HEAD
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.0...HEAD
+[0.37.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.36.0...v0.37.0
 [0.36.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.2...v0.36.0
 [0.35.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.1...v0.35.2
 [0.35.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.0...v0.35.1
