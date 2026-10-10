@@ -727,7 +727,8 @@ unusual X-RateLimit-Reset values.
 
 - Upgrade activitypub-bot (through 0.16.3)
 
-[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.0...HEAD
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.1...HEAD
+[0.37.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.0...v0.37.1
 [0.37.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.36.0...v0.37.0
 [0.36.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.2...v0.36.0
 [0.35.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.35.1...v0.35.2
