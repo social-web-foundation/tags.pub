@@ -11,6 +11,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.37.1] - 2026-10-10
+
+### Fixed
+
+- Installed activitypub-bot from npm for lockfile.
+
 ## [0.37.0] - 2026-10-10
 
 ### Updated
