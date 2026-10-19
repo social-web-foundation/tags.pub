@@ -36,6 +36,9 @@
     "standard": "^17.1.2",
     "supertest": "^7.3.1"
   },
+  "engines": {
+    "node": "^22 || ^24 || ^26"
+  },
   "allowScripts": {
     "sqlite3@6.0.1": true
   }
