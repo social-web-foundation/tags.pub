@@ -1,5 +1,6 @@
 import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert'
+import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
 import request from 'supertest'
 import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
@@ -16,7 +17,7 @@ async function shareInOutbox (app, username, objectId) {
   assert.strictEqual(response.status, 200)
   assert.strictEqual(typeof response.body, 'object')
   let found
-  for (const item of response.body.items) {
+  for (const item of response.body.orderedItems) {
     const ir = await request(app).get((new URL(item)).pathname)
     assert.strictEqual(ir.status, 200)
     assert.strictEqual(typeof ir.body, 'object')
@@ -38,9 +39,9 @@ async function unshareInOutbox (app, username, objectId) {
   const response = await request(app).get(`/user/${username}/outbox/1`)
   assert.strictEqual(response.status, 200)
   assert.strictEqual(typeof response.body, 'object')
-  assert.strictEqual(response.body.items.length, r1.body.totalItems)
+  assert.strictEqual(response.body.orderedItems.length, r1.body.totalItems)
   let found
-  for (const item of response.body.items) {
+  for (const item of response.body.orderedItems) {
     const ir = await request(app).get((new URL(item)).pathname)
     assert.strictEqual(ir.status, 200)
     assert.strictEqual(typeof ir.body, 'object')
@@ -62,20 +63,31 @@ describe('Tags in shared inbox', async () => {
   const host = 'activitypubbot.test'
   const remote = 'social.example'
   const origin = `https://${host}`
-  const databaseUrl = 'sqlite::memory:'
+  const databaseUrl = getTestDatabaseUrl()
   const noteId = nockFormat({ username: 'test1', type: 'Note', num: nextNum() })
 
   let app = null
 
+  const testData = {
+    localDomain: host,
+    usernames: ['greeting', 'intro', 'friendly', 'introduction', 'quietcreate', 'quietupdate', 'quietdelete', 'allowedtag', 'allowedupd', 'alloweddel', 'allowedcapcreate', 'allowedcapupd', 'allowedcapdel'],
+    remoteDomains: [remote]
+  }
+
   before(async () => {
+    await cleanupTestDatabase(testData)
     process.env.HASHTAG_BLOCKLIST = 'blockedtag'
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
+    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     nockSetup(remote)
   })
 
   after(async () => {
-    await app.cleanup()
+    try {
+      if (app) await app.cleanup()
+    } finally {
+      await cleanupTestDatabase(testData)
+    }
   })
 
   describe('Create activity to public inbox with one tag', async () => {

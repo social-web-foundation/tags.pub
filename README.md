@@ -22,6 +22,17 @@ The server is based on [activitypub-bot](https://github.com/evanp/activitypub-bo
 
 PRs are welcome; code should be formatted in StandardJS. New PRs should link to a GitHub issue and should include a unit test for the feature added/bug fixed.
 
+Run `npm test` to test with in-memory SQLite. The relay-server suite is skipped
+with this backend because it requires concurrent transactions.
+
+Set `TEST_DATABASE_URL` to a SQLite file or external database URL to run that
+suite too. The suites clean up their fixture data before and after running.
+Run tests serially when sharing a database:
+
+```sh
+TEST_DATABASE_URL=sqlite:/tmp/tags-pub-test.sqlite npm run test:serial
+```
+
 ## License
 
 tags.pub -- global hashtag server for the ActivityPub network

@@ -1,5 +1,6 @@
 import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert'
+import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
 import request from 'supertest'
 import nock from 'nock'
 import as2 from './utils/activitystreams.js'
@@ -17,7 +18,7 @@ async function shareInOutbox (app, username, objectId) {
   assert.strictEqual(response.status, 200)
   assert.strictEqual(typeof response.body, 'object')
   let found
-  for (const item of response.body.items) {
+  for (const item of response.body.orderedItems) {
     const ir = await request(app).get((new URL(item)).pathname)
     assert.strictEqual(ir.status, 200)
     assert.strictEqual(typeof ir.body, 'object')
@@ -51,19 +52,26 @@ describe('Announce from a relay server via relay client', async () => {
   const relayHost = 'relay.relayclient.test'
   const authorHost = 'author.relayclient.test'
   const origin = `https://${host}`
-  const databaseUrl = 'sqlite::memory:'
+  const databaseUrl = getTestDatabaseUrl()
   const relayUsername = 'relay'
   const relayActor = nockFormat({ username: relayUsername, domain: relayHost })
   const botId = `${origin}/user/_relayclient`
 
   let app = null
 
+  const testData = {
+    localDomain: host,
+    usernames: ['greeting', 'privategreeting', 'quietannounce', 'untrusted'],
+    remoteDomains: [relayHost, authorHost]
+  }
+
   before(async () => {
+    await cleanupTestDatabase(testData)
     nockSetup(relayHost)
     nockSetup(authorHost)
     process.env.RELAYS = relayActor
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
+    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     await app.onIdle()
 
     // Simulate the relay's Accept so _relayclient adds it to following.
@@ -113,7 +121,11 @@ describe('Announce from a relay server via relay client', async () => {
   })
 
   after(async () => {
-    await app.cleanup()
+    try {
+      if (app) await app.cleanup()
+    } finally {
+      await cleanupTestDatabase(testData)
+    }
   })
 
   describe('Announce of a tagged Note by URL reference', async () => {

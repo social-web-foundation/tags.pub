@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "test:serial": "node --test --test-concurrency=1"
   },
   "repository": {
     "type": "git",
@@ -24,12 +25,14 @@
   },
   "homepage": "https://github.com/social-web-foundation/tags.pub#readme",
   "dependencies": {
-    "@evanp/activitypub-bot": "^0.54.4",
+    "@evanp/activitypub-bot": "^0.55.0",
     "any-ascii": "^0.3.3"
   },
   "devDependencies": {
-    "@evanp/activitypub-nock": "^1.0.1",
+    "@evanp/activitypub-nock": "^2.0.1",
     "activitystrea.ms": "^4.0.2",
+    "nock": "^15.0.1",
+    "sequelize": "^6.37.8",
     "standard": "^17.1.2",
     "supertest": "^7.3.1"
   },

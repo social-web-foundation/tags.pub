@@ -5,6 +5,7 @@ import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
 import { nockSetup, nockFormat, nockSignature, setBio, setActorStatus, clearActorStatus } from '@evanp/activitypub-nock'
 import { makeDigest } from './utils/digest.js'
+import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
 
 const nextNum = (() => {
   let num = 0
@@ -16,7 +17,7 @@ async function shareInOutbox (app, username, objectId) {
   assert.strictEqual(response.status, 200)
   assert.strictEqual(typeof response.body, 'object')
   let found
-  for (const item of response.body.items) {
+  for (const item of response.body.orderedItems) {
     const ir = await request(app).get((new URL(item)).pathname)
     assert.strictEqual(ir.status, 200)
     assert.strictEqual(typeof ir.body, 'object')
@@ -38,9 +39,9 @@ async function unshareInOutbox (app, username, objectId) {
   const response = await request(app).get(`/user/${username}/outbox/1`)
   assert.strictEqual(response.status, 200)
   assert.strictEqual(typeof response.body, 'object')
-  assert.strictEqual(response.body.items.length, r1.body.totalItems)
+  assert.strictEqual(response.body.orderedItems.length, r1.body.totalItems)
   let found
-  for (const item of response.body.items) {
+  for (const item of response.body.orderedItems) {
     const ir = await request(app).get((new URL(item)).pathname)
     assert.strictEqual(ir.status, 200)
     assert.strictEqual(typeof ir.body, 'object')
@@ -58,24 +59,39 @@ async function unshareInOutbox (app, username, objectId) {
   return !!found
 }
 
-describe('Tags in relay server inbox', async () => {
+describe('Tags in relay server inbox', {
+  skip: getTestDatabaseUrl() === 'sqlite::memory:'
+    ? 'Concurrent transactions require a file or external database; set TEST_DATABASE_URL'
+    : false
+}, async () => {
   const host = 'activitypubbot.test'
   const remote = 'social.example'
   const origin = `https://${host}`
-  const databaseUrl = 'sqlite::memory:'
+  const databaseUrl = getTestDatabaseUrl()
   const noteId = nockFormat({ username: 'test1', type: 'Note', num: nextNum(), domain: remote })
   const relayServerBot = '_____relay_____'
 
   let app = null
 
+  const testData = {
+    localDomain: host,
+    usernames: ['greeting', 'intro', 'friendly', 'introduction'],
+    remoteDomains: [remote]
+  }
+
   before(async () => {
+    await cleanupTestDatabase(testData)
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
+    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     nockSetup(remote)
   })
 
   after(async () => {
-    await app.cleanup()
+    try {
+      if (app) await app.cleanup()
+    } finally {
+      await cleanupTestDatabase(testData)
+    }
   })
 
   describe('Create activity to relay server inbox with one tag', async () => {

@@ -1,5 +1,6 @@
 import { describe, it, after, before } from 'node:test'
 import assert from 'node:assert'
+import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
 import request from 'supertest'
 import {
   nockSetup,
@@ -18,7 +19,7 @@ describe('bots', async () => {
   const thirdUser = 'third'
   const host = 'bots.test'
   const origin = `https://${host}`
-  const databaseUrl = 'sqlite::memory:'
+  const databaseUrl = getTestDatabaseUrl()
   const tag = 'linux'
   const forceUnsubHost1 = 'forceunsubone.bots.test'
   const forceUnsubHost2 = 'forceunsubtwo.bots.test'
@@ -36,7 +37,14 @@ describe('bots', async () => {
   let forceUnsub1 = null
   let forceUnsub2 = null
 
+  const testData = {
+    localDomain: host,
+    usernames: ['linux'],
+    remoteDomains: [remoteHost, thirdHost, forceUnsubHost1, forceUnsubHost2, signerHost]
+  }
+
   before(async () => {
+    await cleanupTestDatabase(testData)
     nockSetup(remoteHost)
     nockSetup(thirdHost)
     nockSetup(forceUnsubHost1)
@@ -51,8 +59,10 @@ describe('bots', async () => {
   })
 
   after(async () => {
-    if (app) {
-      await app.cleanup()
+    try {
+      if (app) await app.cleanup()
+    } finally {
+      await cleanupTestDatabase(testData)
     }
   })
 
@@ -67,7 +77,7 @@ describe('bots', async () => {
   })
 
   it('can initialize the app', async () => {
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent' })
+    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     assert.ok(app)
     assert.strictEqual(typeof app, 'function')
   })
