@@ -1,6 +1,6 @@
 import { describe, it, after, before } from 'node:test'
 import assert from 'node:assert'
-import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
+import { getTestDatabaseUrl, getTestRedisUrl, cleanupTestDatabase, cleanupRedis } from './utils/db.js'
 import request from 'supertest'
 import {
   nockSetup,
@@ -20,6 +20,7 @@ describe('bots', async () => {
   const host = 'bots.test'
   const origin = `https://${host}`
   const databaseUrl = getTestDatabaseUrl()
+  const redisUrl = getTestRedisUrl()
   const tag = 'linux'
   const forceUnsubHost1 = 'forceunsubone.bots.test'
   const forceUnsubHost2 = 'forceunsubtwo.bots.test'
@@ -44,7 +45,7 @@ describe('bots', async () => {
   }
 
   before(async () => {
-    await cleanupTestDatabase(testData)
+    await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     nockSetup(remoteHost)
     nockSetup(thirdHost)
     nockSetup(forceUnsubHost1)
@@ -62,7 +63,7 @@ describe('bots', async () => {
     try {
       if (app) await app.cleanup()
     } finally {
-      await cleanupTestDatabase(testData)
+      await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     }
   })
 
@@ -77,7 +78,7 @@ describe('bots', async () => {
   })
 
   it('can initialize the app', async () => {
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
+    app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     assert.ok(app)
     assert.strictEqual(typeof app, 'function')
   })

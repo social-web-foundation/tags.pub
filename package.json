@@ -32,6 +32,7 @@
     "@evanp/activitypub-nock": "^2.0.1",
     "activitystrea.ms": "^4.0.2",
     "nock": "^15.0.1",
+    "redis": "^6.1.0",
     "sequelize": "^6.37.8",
     "standard": "^17.1.2",
     "supertest": "^7.3.1"

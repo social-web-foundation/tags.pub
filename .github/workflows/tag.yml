@@ -32,8 +32,70 @@ jobs:
     - name: Run tests
       run: npm run test
 
+  postgresIntegrationTests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+    - uses: actions/checkout@v7
+
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 26
+        cache: npm
+        cache-dependency-path: package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests with Postgres and Redis
+      env:
+        TEST_DATABASE_URL: postgres://test:test@localhost:5432/test
+        TEST_REDIS_URL: redis://localhost:6379
+      run: npm run test:serial
+
+  sqliteIntegrationTests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 26
+        cache: npm
+        cache-dependency-path: package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests with SQLite
+      env:
+        TEST_DATABASE_URL: sqlite:/tmp/test.sqlite
+      run: npm run test:serial
+
   build-and-push:
-    needs: runTests
+    needs: [runTests, postgresIntegrationTests, sqliteIntegrationTests]
     runs-on: ubuntu-latest
 
     permissions:

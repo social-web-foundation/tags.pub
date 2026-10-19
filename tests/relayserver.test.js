@@ -5,7 +5,7 @@ import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
 import { nockSetup, nockFormat, nockSignature, setBio, setActorStatus, clearActorStatus } from '@evanp/activitypub-nock'
 import { makeDigest } from './utils/digest.js'
-import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
+import { getTestDatabaseUrl, getTestRedisUrl, cleanupTestDatabase, cleanupRedis } from './utils/db.js'
 
 const nextNum = (() => {
   let num = 0
@@ -68,6 +68,7 @@ describe('Tags in relay server inbox', {
   const remote = 'social.example'
   const origin = `https://${host}`
   const databaseUrl = getTestDatabaseUrl()
+  const redisUrl = getTestRedisUrl()
   const noteId = nockFormat({ username: 'test1', type: 'Note', num: nextNum(), domain: remote })
   const relayServerBot = '_____relay_____'
 
@@ -80,9 +81,9 @@ describe('Tags in relay server inbox', {
   }
 
   before(async () => {
-    await cleanupTestDatabase(testData)
+    await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
+    app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     nockSetup(remote)
   })
 
@@ -90,7 +91,7 @@ describe('Tags in relay server inbox', {
     try {
       if (app) await app.cleanup()
     } finally {
-      await cleanupTestDatabase(testData)
+      await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     }
   })
 

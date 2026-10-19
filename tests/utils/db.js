@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize'
+import { createClient } from 'redis'
 import { runMigrations } from '@evanp/activitypub-bot/lib/migrations/index.js'
 
 const SQLITE_MEMORY_URL = 'sqlite::memory:'
@@ -12,6 +13,24 @@ const SQLITE_MEMORY_ALIASES = new Set([
 export function getTestDatabaseUrl () {
   const databaseUrl = process.env.TEST_DATABASE_URL || SQLITE_MEMORY_URL
   return SQLITE_MEMORY_ALIASES.has(databaseUrl) ? SQLITE_MEMORY_URL : databaseUrl
+}
+
+export function getTestRedisUrl () {
+  return process.env.TEST_REDIS_URL || null
+}
+
+export async function cleanupRedis (origin) {
+  const redisUrl = getTestRedisUrl()
+  if (!redisUrl) return
+  const client = createClient({ url: redisUrl })
+  await client.connect()
+  try {
+    for await (const keys of client.scanIterator({ MATCH: `${origin}:*`, COUNT: 100 })) {
+      if (keys.length > 0) await client.del(keys)
+    }
+  } finally {
+    await client.close()
+  }
 }
 
 function toUrlPattern (domainOrOrigin) {

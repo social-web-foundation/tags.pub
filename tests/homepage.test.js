@@ -1,10 +1,11 @@
 import { describe, it, after, before } from 'node:test'
 import assert from 'node:assert'
-import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
+import { getTestDatabaseUrl, getTestRedisUrl, cleanupTestDatabase, cleanupRedis } from './utils/db.js'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 import request from 'supertest'
+import { createClient } from 'redis'
 
 import { makeApp } from '@evanp/activitypub-bot'
 
@@ -16,7 +17,7 @@ describe('Homepage', async () => {
   const host = 'activitypubbot.test'
   const origin = `https://${host}`
   const databaseUrl = getTestDatabaseUrl()
-  const tag = 'linux'
+  const redisUrl = getTestRedisUrl()
   const indexFileName = resolve(baseDir, '..', 'web', 'index.html')
   const logLevel = 'silent'
 
@@ -29,16 +30,16 @@ describe('Homepage', async () => {
   }
 
   before(async () => {
-    await cleanupTestDatabase(testData)
+    await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp({ databaseUrl, origin, bots, logLevel, indexFileName })
+    app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel, indexFileName })
   })
 
   after(async () => {
     try {
       if (app) await app.cleanup()
     } finally {
-      await cleanupTestDatabase(testData)
+      await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     }
   })
 
@@ -55,6 +56,16 @@ describe('Homepage', async () => {
     })
     it('should include the application title', async () => {
       assert.ok(response.text.match(/<title>tags.pub<\/title>/))
+    })
+    it('uses Redis rate-limit counters when configured', { skip: !redisUrl }, async () => {
+      const client = createClient({ url: redisUrl })
+      await client.connect()
+      try {
+        assert.ok((await client.keys(`${origin}:steady-get:*`)).length > 0)
+        assert.ok((await client.keys(`${origin}:burst-get:*`)).length > 0)
+      } finally {
+        await client.close()
+      }
     })
   })
 })

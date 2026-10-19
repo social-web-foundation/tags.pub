@@ -27,7 +27,9 @@ with this backend because it requires concurrent transactions.
 
 Set `TEST_DATABASE_URL` to a SQLite file or external database URL to run that
 suite too. The suites clean up their fixture data before and after running.
-Run tests serially when sharing a database:
+Set `TEST_REDIS_URL` to exercise Redis-backed rate limiting. Each suite removes
+only Redis keys prefixed with its application origin before and after running.
+Run tests serially when sharing a database or Redis instance:
 
 ```sh
 TEST_DATABASE_URL=sqlite:/tmp/tags-pub-test.sqlite npm run test:serial

@@ -1,6 +1,6 @@
 import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert'
-import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
+import { getTestDatabaseUrl, getTestRedisUrl, cleanupTestDatabase, cleanupRedis } from './utils/db.js'
 import request from 'supertest'
 import nock from 'nock'
 import as2 from './utils/activitystreams.js'
@@ -53,6 +53,7 @@ describe('Announce from a relay server via relay client', async () => {
   const authorHost = 'author.relayclient.test'
   const origin = `https://${host}`
   const databaseUrl = getTestDatabaseUrl()
+  const redisUrl = getTestRedisUrl()
   const relayUsername = 'relay'
   const relayActor = nockFormat({ username: relayUsername, domain: relayHost })
   const botId = `${origin}/user/_relayclient`
@@ -66,12 +67,12 @@ describe('Announce from a relay server via relay client', async () => {
   }
 
   before(async () => {
-    await cleanupTestDatabase(testData)
+    await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     nockSetup(relayHost)
     nockSetup(authorHost)
     process.env.RELAYS = relayActor
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
+    app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     await app.onIdle()
 
     // Simulate the relay's Accept so _relayclient adds it to following.
@@ -124,7 +125,7 @@ describe('Announce from a relay server via relay client', async () => {
     try {
       if (app) await app.cleanup()
     } finally {
-      await cleanupTestDatabase(testData)
+      await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     }
   })
 

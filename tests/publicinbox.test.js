@@ -1,6 +1,6 @@
 import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert'
-import { getTestDatabaseUrl, cleanupTestDatabase } from './utils/db.js'
+import { getTestDatabaseUrl, getTestRedisUrl, cleanupTestDatabase, cleanupRedis } from './utils/db.js'
 import request from 'supertest'
 import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
@@ -64,6 +64,7 @@ describe('Tags in shared inbox', async () => {
   const remote = 'social.example'
   const origin = `https://${host}`
   const databaseUrl = getTestDatabaseUrl()
+  const redisUrl = getTestRedisUrl()
   const noteId = nockFormat({ username: 'test1', type: 'Note', num: nextNum() })
 
   let app = null
@@ -75,10 +76,10 @@ describe('Tags in shared inbox', async () => {
   }
 
   before(async () => {
-    await cleanupTestDatabase(testData)
+    await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     process.env.HASHTAG_BLOCKLIST = 'blockedtag'
     const bots = (await import('../lib/bots.js')).default
-    app = await makeApp({ databaseUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
+    app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     nockSetup(remote)
   })
 
@@ -86,7 +87,7 @@ describe('Tags in shared inbox', async () => {
     try {
       if (app) await app.cleanup()
     } finally {
-      await cleanupTestDatabase(testData)
+      await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     }
   })
 
