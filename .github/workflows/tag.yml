@@ -97,6 +97,9 @@ jobs:
   build-and-push:
     needs: [runTests, postgresIntegrationTests, sqliteIntegrationTests]
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ghcr.io/${{ github.repository }}
+      SMOKE_IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
     permissions:
       contents: read
@@ -105,6 +108,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+
+      - name: Set up Docker with containerd image store
+        uses: docker/setup-docker-action@v5
+        with:
+          daemon-config: |
+            {
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: arm64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -121,6 +139,70 @@ jobs:
           echo "MAJOR_VERSION=$MAJOR" >> $GITHUB_OUTPUT
           echo "MAJOR_MINOR_VERSION=$MAJOR.$MINOR" >> $GITHUB_OUTPUT
 
+      - name: Build Docker image
+        id: build_image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            PACKAGE_VERSION=${{ steps.get_version.outputs.FULL_VERSION }}
+          tags: ${{ env.SMOKE_IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test Docker image
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          container=
+          cleanup() {
+            if [ -n "$container" ]; then
+              docker logs "$container" || true
+              docker rm --force "$container" > /dev/null || true
+            fi
+          }
+          trap cleanup EXIT
+
+          for arch in amd64 arm64; do
+            container="tags-pub-smoke-$arch"
+            docker run --detach --name "$container" \
+              --pull=never --platform "linux/$arch" \
+              --publish 127.0.0.1:9000:9000 \
+              --env DATABASE_URL=sqlite:/tmp/smoke.sqlite \
+              --env ORIGIN=https://smoke.tags.pub.test \
+              "$SMOKE_IMAGE"
+
+            ready=false
+            for attempt in {1..60}; do
+              if curl --fail --silent --max-time 2 http://127.0.0.1:9000/readyz; then
+                ready=true
+                break
+              fi
+              if [ "$(docker inspect --format '{{.State.Running}}' "$container")" != true ]; then
+                echo "::error::Smoke test container exited on linux/$arch"
+                exit 1
+              fi
+              sleep 2
+            done
+            if [ "$ready" != true ]; then
+              echo "::error::Smoke test readiness timed out on linux/$arch"
+              exit 1
+            fi
+
+            curl --fail --silent --show-error --max-time 5 http://127.0.0.1:9000/livez
+            curl --fail --silent --show-error --max-time 5 \
+              --header 'Accept: text/html' \
+              --output "$RUNNER_TEMP/tags-pub-smoke.html" \
+              http://127.0.0.1:9000/
+            grep -q '<title>tags.pub</title>' "$RUNNER_TEMP/tags-pub-smoke.html"
+
+            cleanup
+            container=
+          done
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
         with:
@@ -128,18 +210,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          platforms: linux/amd64,linux/arm64
-          build-args: |
-            PACKAGE_VERSION=${{ steps.get_version.outputs.FULL_VERSION }}
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.FULL_VERSION }}
-            ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.MAJOR_MINOR_VERSION }}
-            ghcr.io/${{ github.repository }}:${{ steps.get_version.outputs.MAJOR_VERSION }}
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Push Docker image and release tags
+        env:
+          IMAGE_DIGEST: ${{ steps.build_image.outputs.digest }}
+          FULL_VERSION: ${{ steps.get_version.outputs.FULL_VERSION }}
+          MAJOR_MINOR_VERSION: ${{ steps.get_version.outputs.MAJOR_MINOR_VERSION }}
+          MAJOR_VERSION: ${{ steps.get_version.outputs.MAJOR_VERSION }}
+        run: |
+          set -euo pipefail
+          docker push "$SMOKE_IMAGE"
+          docker buildx imagetools create \
+            --tag "$IMAGE_NAME:$FULL_VERSION" \
+            --tag "$IMAGE_NAME:$MAJOR_MINOR_VERSION" \
+            --tag "$IMAGE_NAME:$MAJOR_VERSION" \
+            "$IMAGE_NAME@$IMAGE_DIGEST"
