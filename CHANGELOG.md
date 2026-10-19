@@ -11,6 +11,28 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.38.0] - 2026-10-19
+
+### Added
+
+- PostgreSQL, Redis, and on-disk SQLite integration tests in CI.
+- Configurable database and Redis backends for tests, with shared fixture
+  cleanup and a `test:serial` script.
+- Smoke tests for AMD64 and ARM64 Docker images before publishing the SHA
+  and release tags.
+
+### Changed
+
+- Support Node.js 22, 24, and 26, with CI coverage for all three versions.
+- Use Node.js 26 in the Alpine Docker image.
+- Update activitypub-bot, activitypub-nock, Nock, and supertest dependencies.
+
+### Fixed
+
+- Adapt HTTP mocking and collection assertions to the updated dependencies.
+- Avoid concurrent SQLite in-memory transactions in tests by using one
+  delivery worker and skipping the relay-server suite with that backend.
+
 ## [0.37.2] - 2026-10-10
 
 ### Updated
@@ -733,7 +755,8 @@ unusual X-RateLimit-Reset values.
 
 - Upgrade activitypub-bot (through 0.16.3)
 
-[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.2...HEAD
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.0...HEAD
+[0.38.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.2...v0.38.0
 [0.37.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.1...v0.37.2
 [0.37.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.0...v0.37.1
 [0.37.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.36.0...v0.37.0
