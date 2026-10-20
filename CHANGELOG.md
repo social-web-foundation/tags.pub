@@ -11,6 +11,20 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.38.1] - 2026-10-20
+
+### Added
+
+- Inbox regression test for activities referencing the FEP-ef61 Portable
+  Objects context, including processing when the context URL is unavailable.
+
+### Fixed
+
+- Update activitypub-bot to bundle JSON-LD contexts locally, including FEP
+  and Social Web contexts, avoiding remote context fetch failures.
+- Update @digitalbazaar/http-client to fix compatibility between fetch and
+  Undici when retrieving remote JSON-LD contexts.
+
 ## [0.38.0] - 2026-10-19
 
 ### Added
@@ -755,7 +769,8 @@ unusual X-RateLimit-Reset values.
 
 - Upgrade activitypub-bot (through 0.16.3)
 
-[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.0...HEAD
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.1...HEAD
+[0.38.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.0...v0.38.1
 [0.38.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.2...v0.38.0
 [0.37.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.1...v0.37.2
 [0.37.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.0...v0.37.1
