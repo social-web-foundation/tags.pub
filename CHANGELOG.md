@@ -11,6 +11,18 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.38.2] - 2026-10-20
+
+### Changed
+
+- Update activitypub-bot and activitystrea.ms dependencies.
+- Apply StandardJS formatting and remove unused test variables.
+
+### Fixed
+
+- Resolve activitypub-bot from npm instead of a local directory in the
+  lockfile, fixing dependency installation in CI.
+
 ## [0.38.1] - 2026-10-20
 
 ### Added
@@ -769,7 +781,8 @@ unusual X-RateLimit-Reset values.
 
 - Upgrade activitypub-bot (through 0.16.3)
 
-[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.1...HEAD
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.2...HEAD
+[0.38.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.1...v0.38.2
 [0.38.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.0...v0.38.1
 [0.38.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.2...v0.38.0
 [0.37.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.1...v0.37.2
