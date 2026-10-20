@@ -2,6 +2,7 @@ import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert'
 import { getTestDatabaseUrl, getTestRedisUrl, cleanupTestDatabase, cleanupRedis } from './utils/db.js'
 import request from 'supertest'
+import nock from 'nock'
 import as2 from './utils/activitystreams.js'
 import { makeApp } from '@evanp/activitypub-bot'
 import { nockSetup, nockFormat, nockSignature, postInbox } from '@evanp/activitypub-nock'
@@ -71,7 +72,7 @@ describe('Tags in shared inbox', async () => {
 
   const testData = {
     localDomain: host,
-    usernames: ['greeting', 'intro', 'friendly', 'introduction', 'quietcreate', 'quietupdate', 'quietdelete', 'allowedtag', 'allowedupd', 'alloweddel', 'allowedcapcreate', 'allowedcapupd', 'allowedcapdel'],
+    usernames: ['greeting', 'intro', 'friendly', 'introduction', 'portableobjects', 'quietcreate', 'quietupdate', 'quietdelete', 'allowedtag', 'allowedupd', 'alloweddel', 'allowedcapcreate', 'allowedcapupd', 'allowedcapdel'],
     remoteDomains: [remote]
   }
 
@@ -89,6 +90,61 @@ describe('Tags in shared inbox', async () => {
     } finally {
       await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     }
+  })
+
+  it('should process a Create with the FEP-ef61 Portable Objects context without fetching it', async t => {
+    let contextFetches = 0
+    const contextRequest = nock('https://w3id.org').persist().get('/fep/ef61')
+    contextRequest.optionally().reply(() => {
+      contextFetches++
+      return [503, 'Context unavailable']
+    })
+    t.after(() => { nock.removeInterceptor(contextRequest) })
+
+    const username = 'test1'
+    const objectId = nockFormat({ username, type: 'Note', num: nextNum() })
+    const path = '/shared/inbox'
+    const date = new Date().toUTCString()
+    const body = JSON.stringify({
+      '@context': [
+        'https://www.w3.org/ns/activitystreams',
+        'https://purl.archive.org/miscellany',
+        'https://w3id.org/fep/ef61'
+      ],
+      type: 'Create',
+      id: nockFormat({ username, type: 'Create', num: nextNum() }),
+      actor: nockFormat({ username }),
+      to: 'as:Public',
+      object: {
+        type: 'Note',
+        id: objectId,
+        attributedTo: nockFormat({ username }),
+        to: 'as:Public',
+        content: `<p>Hello, <a href="https://${remote}/tag/portableobjects">#portableobjects</a>!</p>`,
+        gateways: [`https://${remote}`],
+        tag: {
+          type: 'Hashtag',
+          href: `https://${remote}/tag/portableobjects`,
+          name: '#portableobjects'
+        }
+      }
+    })
+    const digest = makeDigest(body)
+    const signature = await nockSignature({ method: 'POST', username, url: `${origin}${path}`, digest, date })
+
+    const response = await request(app)
+      .post(path)
+      .send(body)
+      .set('Signature', signature)
+      .set('Date', date)
+      .set('Host', host)
+      .set('Digest', digest)
+      .set('Content-Type', 'application/activity+json')
+
+    assert.strictEqual(response.status, 202)
+    await app.onIdle()
+    assert.strictEqual(contextFetches, 0)
+    assert.ok(await shareInOutbox(app, 'portableobjects', objectId))
   })
 
   describe('Create activity to public inbox with one tag', async () => {
