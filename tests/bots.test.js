@@ -68,7 +68,7 @@ describe('bots', async () => {
   })
 
   it('can load the bots', async () => {
-    process.env.RELAYS = [relay1,relay2].join(',')
+    process.env.RELAYS = [relay1, relay2].join(',')
     bots = (await import('../lib/bots.js')).default
     assert.ok(bots)
     assert.strictEqual(typeof bots, 'object')
@@ -86,7 +86,7 @@ describe('bots', async () => {
   describe('GET /user/_____relay_____', async () => {
     let response = null
     it('should work without an error', async () => {
-      response = await request(app).get(`/user/_____relay_____`)
+      response = await request(app).get('/user/_____relay_____')
     })
     it('should return 200 OK', async () => {
       assert.strictEqual(response.status, 200)
@@ -101,7 +101,7 @@ describe('bots', async () => {
       assert.strictEqual(typeof response.body.id, 'string')
     })
     it('should return an object with an id matching the request', async () => {
-      assert.strictEqual(response.body.id, origin + `/user/_____relay_____`)
+      assert.strictEqual(response.body.id, origin + '/user/_____relay_____')
     })
     it('should return an object with a type', async () => {
       assert.strictEqual(typeof response.body.type, 'string')
@@ -175,7 +175,7 @@ describe('bots', async () => {
   describe('GET /user/_followback', async () => {
     let response = null
     it('should work without an error', async () => {
-      response = await request(app).get(`/user/_followback`)
+      response = await request(app).get('/user/_followback')
     })
     it('should return 200 OK', async () => {
       assert.strictEqual(response.status, 200)
@@ -191,7 +191,7 @@ describe('bots', async () => {
   describe('GET /user/_relayclient', async () => {
     let response = null
     it('should work without an error', async () => {
-      response = await request(app).get(`/user/_relayclient`)
+      response = await request(app).get('/user/_relayclient')
     })
     it('should return 200 OK', async () => {
       assert.strictEqual(response.status, 200)
@@ -203,7 +203,7 @@ describe('bots', async () => {
       assert.strictEqual(typeof response.body, 'object')
     })
     it('should return an object with an id matching the request', async () => {
-      assert.strictEqual(response.body.id, origin + `/user/_relayclient`)
+      assert.strictEqual(response.body.id, origin + '/user/_relayclient')
     })
     it('should return an object with type Application', async () => {
       assert.strictEqual(response.body.type, 'Application')
