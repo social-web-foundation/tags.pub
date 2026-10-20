@@ -168,7 +168,6 @@ describe('Tags in relay server inbox', {
   describe('Create activity to relay server inbox with multiple tags', async () => {
     let response = null
     let create = null
-    let objectId
     let body
     let digest
     let signature

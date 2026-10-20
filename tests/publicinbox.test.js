@@ -220,7 +220,6 @@ describe('Tags in shared inbox', async () => {
   describe('Create activity to public inbox with multiple tags', async () => {
     let response = null
     let create = null
-    let objectId
     let body
     let digest
     let signature
