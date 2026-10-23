@@ -11,7 +11,11 @@ and this project adheres to
 
 ## [Unreleased]
 
-## [0.56.2] - 2026-10-23
+## [0.38.3] - 2026-10-23
+
+### Changed
+
+- Update activitypub-bot
 
 ### Security
 
@@ -787,8 +791,8 @@ unusual X-RateLimit-Reset values.
 
 - Upgrade activitypub-bot (through 0.16.3)
 
-[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.56.2...HEAD
-[0.56.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.2...v0.56.2
+[Unreleased]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.3...HEAD
+[0.38.3]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.2...v0.38.3
 [0.38.2]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.1...v0.38.2
 [0.38.1]: https://github.com/social-web-foundation/tags.pub/compare/v0.38.0...v0.38.1
 [0.38.0]: https://github.com/social-web-foundation/tags.pub/compare/v0.37.2...v0.38.0
