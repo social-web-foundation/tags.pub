@@ -35,7 +35,7 @@
     "redis": "^6.3.1",
     "sequelize": "^6.37.8",
     "standard": "^17.1.2",
-    "supertest": "^7.3.1"
+    "supertest": "^7.3.2"
   },
   "engines": {
     "node": "^22 || ^24 || ^26"
