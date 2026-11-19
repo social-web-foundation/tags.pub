@@ -14,6 +14,7 @@ and this project adheres to
 ### Changed
 
 - Update activitypub-bot
+- Update development dependencies: nock, redis, and supertest.
 
 ## [0.38.3] - 2026-10-23
 
