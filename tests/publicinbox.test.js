@@ -52,7 +52,7 @@ async function unshareInOutbox (app, username, objectId) {
         activity.object &&
         activity.object.type === 'Announce' &&
         activity.object.object &&
-        activity.object.object.id === objectId) {
+        activity.object.object === objectId) {
       found = activity
       break
     }

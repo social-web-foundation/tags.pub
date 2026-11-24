@@ -11,6 +11,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix shared inbox and relay server tests to expect URI references in
+  `Undo.object.object`.
+
 ## [0.40.1] - 2026-11-24
 
 ### Changed
