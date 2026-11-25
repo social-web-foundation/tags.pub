@@ -33,6 +33,8 @@ describe('Homepage', async () => {
     await Promise.all([cleanupTestDatabase(testData), cleanupRedis(origin)])
     const bots = (await import('../lib/bots.js')).default
     app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel, indexFileName })
+    await app.startWorkers()
+    await app.initializeNetwork()
   })
 
   after(async () => {

@@ -73,6 +73,8 @@ describe('Announce from a relay server via relay client', async () => {
     process.env.RELAYS = relayActor
     const bots = (await import('../lib/bots.js')).default
     app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
+    await app.startWorkers()
+    await app.initializeNetwork()
     await app.onIdle()
 
     // Simulate the relay's Accept so _relayclient adds it to following.

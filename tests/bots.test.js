@@ -79,6 +79,8 @@ describe('bots', async () => {
 
   it('can initialize the app', async () => {
     app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
+    await app.startWorkers()
+    await app.initializeNetwork()
     assert.ok(app)
     assert.strictEqual(typeof app, 'function')
   })

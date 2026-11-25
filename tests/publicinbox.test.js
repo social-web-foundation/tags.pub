@@ -82,6 +82,8 @@ describe('Tags in shared inbox', async () => {
     const bots = (await import('../lib/bots.js')).default
     app = await makeApp({ databaseUrl, redisUrl, origin, bots, logLevel: 'silent', allowPrivateNetworkRequests: true, deliveryWorkerCount: databaseUrl === 'sqlite::memory:' ? 1 : undefined })
     nockSetup(remote)
+    await app.startWorkers()
+    await app.initializeNetwork()
   })
 
   after(async () => {

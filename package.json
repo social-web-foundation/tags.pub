@@ -25,12 +25,12 @@
   },
   "homepage": "https://github.com/social-web-foundation/tags.pub#readme",
   "dependencies": {
-    "@evanp/activitypub-bot": "^0.58.1",
+    "@evanp/activitypub-bot": "^0.59.0",
     "any-ascii": "^0.3.3"
   },
   "devDependencies": {
-    "@evanp/activitypub-nock": "^2.0.1",
-    "activitystrea.ms": "^4.0.2",
+    "@evanp/activitypub-nock": "^2.1.1",
+    "activitystrea.ms": "^4.1.2",
     "nock": "^15.0.6",
     "redis": "^6.3.1",
     "sequelize": "^6.37.8",
